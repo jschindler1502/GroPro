@@ -21,18 +21,20 @@ public class SomeFileReader implements IReader {
     }
 
     @Override
-    public Object readFileContent() throws InputException {
+    public String readFileContent() throws InputException {
         BufferedReader reader;
         // Nummer der akuell gelesenen Zeile ohne Kommentarzeilen
         int lineNumber = 0;
-
+        String line = "";
+        String final_line = "";
         try {
             reader = new BufferedReader(new FileReader(input));
 
-            String line = reader.readLine();
+            line  = reader.readLine();
+            System.out.println(line);
             // Bearbeite alle Zeilen
             while (line != null) {
-
+                final_line = line;
                 // Ueberspringe Kommentarzeilen
                 if (line.startsWith(";")) {
                     line = reader.readLine();
@@ -79,15 +81,6 @@ public class SomeFileReader implements IReader {
 //                    "Fehler beim Lesen der Eingabedatei");
 //        }
 
-        /*
-         * Es müssen mindestens Dimension der Fläche und Startparzelle gelesen
-         * werden
-         */
-        if (lineNumber < 2) {
-            throw new InputException(
-                    "Es müssen mindestens 2 Zeilen angegeben werden");
-        }
-
-        return new Object();// TODO
+        return final_line;// TODO
     }
 }

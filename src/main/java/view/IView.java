@@ -1,7 +1,7 @@
 package view;
 
 /**
- * Schnittstelle für die Implementierung des Views
+ * Schnittstelle fuer die Implementierung des Views
  */
 public interface IView {
 

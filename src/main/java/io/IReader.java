@@ -15,6 +15,6 @@ public interface IReader {
      * @throws InputException
      * TODO wenn die Eingabeparameter ungültig sind
      */
-    Object readFileContent() throws IOException;
+    String readFileContent() throws IOException;
 
 }

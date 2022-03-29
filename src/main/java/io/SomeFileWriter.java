@@ -14,7 +14,7 @@ public class SomeFileWriter implements IWriter {
     private File file;
 
     public SomeFileWriter(File f) {
-        if (f.exists() && f.canWrite() == false) {
+        if (f.exists() && !f.canWrite()) {
             System.err
                     .println("Keine Schreibrechte auf Ausgabedatei");
             System.exit(1);
@@ -38,14 +38,19 @@ public class SomeFileWriter implements IWriter {
      * @param s
      *            - String, der in die Datei geschrieben werden soll
      */
-    private void write(String s) {
+    // TODO may be private (aus main eig nicht aufrufen)
+    public void write(String s) {
         try {
-            FileWriter writer = new FileWriter(file);
+            System.out.println(s);
+            FileWriter writer = new FileWriter(this.file);
             writer.append(s).append('\n');
             writer.close();
-        } catch (IOException ex) {
-            System.err.println("Fehler beim Schreiben der Ausgabedatei");
-            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+//        } catch (IOException ex) {
+//            // System.err.println("Fehler beim Schreiben der Ausgabedatei");
+//            System.exit(1);
+//        }
     }
 }
