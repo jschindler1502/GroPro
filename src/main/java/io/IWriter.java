@@ -1,22 +1,12 @@
 package io;
 
-import view.IView;
+import model.IResult;
 
 /**
- * Interface zur Abstrahierung der Ausgabe
+ * Interface zur Abstrahierung des Auslesens des Results
  */
 public interface IWriter {
 
-    /**
-     * Schreibt die Ausgabe, welcher der View erzeugt
-     * @param view , welcher die Ausgabe erzeugt
-     */
-    void schreibeAusgabe(IView view);
-
-    /**
-     * Schreibt eine aufgetretene Fehlermeldung
-     * @param ex - die Fehlermeldung
-     */
-    void schreibeFehler(Exception ex);
+    void schreibeAusgabe(IResult result, OutputTyp typ, String ausgabedateiname) throws TechnischeException;
 
 }

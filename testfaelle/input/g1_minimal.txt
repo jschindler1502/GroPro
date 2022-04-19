@@ -1,0 +1,8 @@
+; **************************************
+;      Grenzfall 1: kleinstes Feld mit 4 Eckpunkten, Antenne ist an jedem Punkt gueltig
+; **************************************
+; Groesse des Gebietes
+2 2
+; Hoehen
+4 6
+3 4
