@@ -8,12 +8,12 @@ import java.util.Objects;
 /**
  * Programm zur Ausfuehrung des Algorithmus zur Antennenfindung
  */
-public class BacktrackingAlgorithmus implements IAlgorithmus {
+public class BacktrackingStrategie implements IStrategie {
     // TODO private Attr
     private Object best;
     private ArrayList<Object> allePunkte = new ArrayList<>();
 
-    public BacktrackingAlgorithmus(Object modelObj) {
+    public BacktrackingStrategie(Object modelObj) {
         // TODO Attr vorinitialisieren
     }
 

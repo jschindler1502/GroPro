@@ -64,7 +64,7 @@ public class Programm {
             String gesamtInhalt = reader.lies();
             // TODO Konvertiere zu model Object
             Object modelObj = InputConverter.convertInputToFeld(gesamtInhalt);
-            Result result = new BacktrackingAlgorithmus(modelObj).findeMinimaleAntennen();
+            Result result = new BacktrackingStrategie(modelObj).findeMinimaleAntennen();
             FeldWriter writer = new FeldWriter();
             writer.schreibeAusgabe(result, OutputTyp.MONITOR, ausgabedateiname);
             writer.schreibeAusgabe(result, OutputTyp.DATEI, ausgabedateiname);

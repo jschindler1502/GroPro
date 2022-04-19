@@ -5,7 +5,7 @@ import model.Result;
 /**
  * Schnittstelle zur Abstrahierung des Algorithmus zur Antennenfindung
  */
-public interface IAlgorithmus {
+public interface IStrategie {
 
     Result findeMinimaleAntennen();
 }
