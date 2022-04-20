@@ -2,11 +2,11 @@ package io;
 
 import model.IResult;
 
+import java.io.IOException;
+
 /**
- * Interface zur Abstrahierung des Auslesens des Results
+ * Interface zur Abstrahierung des Auslesens der Ausgabedatei
  */
 public interface IWriter {
-
-    void schreibeAusgabe(IResult result, OutputTyp typ, String ausgabedateiname) throws TechnischeException;
-
+    public void schreibeAusgabe(String ausgabe, String ausgabedateiname) throws IOException;
 }

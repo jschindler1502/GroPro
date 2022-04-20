@@ -1,20 +1,24 @@
-package io;
+package controller;
+
+import io.InvalidSyntaxException;
+import io.OutputTyp;
+import model.Result;
 
 import java.io.IOException;
 
+public class InputOutputConverter {
 
-/**
- * Klasse zum Konvertieren des Inhalts der Eingabedatei in ein Feld
- * statisch, da kein Objekt der Klasse zum Konvertieren benoetigt wird
- */
-public class InputConverter implements IInputConverter{
+    private InputOutputConverter(){
+
+    }
+
     /**
      *
      * @param gesamtInhalt
-     * @return das Feld, was aus dem Eingabeinhalt erstellt wird
+     * @return das Data Object, was aus dem Eingabeinhalt erstellt wird
      * @throws IOException
      */
-    public static  Object convertInputToFeld(String gesamtInhalt) throws IOException {
+    public static  Object convertInputToDataObject(String gesamtInhalt) throws IOException {
 
 
         StringBuilder beschreibung = new StringBuilder();
@@ -53,5 +57,17 @@ public class InputConverter implements IInputConverter{
         }
 
         return new Object();
+    }
+
+    /**
+     * Erstellt Ausgabe je nach gewuenschtem Ausgabetyp
+     *
+     * @param ergebnis Das Ergebnis des Algorithmus
+     * @param typ Ausgabetyp
+     * @param ausgabedateiname Name der Ausgabedatei inklusive Pfad
+     */
+    public static String convertResultToOutput(Result ergebnis, OutputTyp typ, String ausgabedateiname) {
+        // bastelt String aus Result
+        return null;
     }
 }

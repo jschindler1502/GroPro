@@ -1,9 +1,6 @@
 package controller;
 
-import io.FeldReader;
-import io.FeldWriter;
-import io.InputConverter;
-import io.OutputTyp;
+import io.*;
 import model.FehlerResult;
 import model.Result;
 
@@ -11,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Programm zur Ausfuehrung der Antennenfindung
+ * Programm zur Ausfuehrung der //TODO
  */
 public class Programm {
     private ArrayList<String> fehlerliste = new ArrayList<>();
@@ -38,12 +35,13 @@ public class Programm {
 
 
         if (!erfolgreichDurchgelaufen) {
-            FeldWriter writer = new FeldWriter();
             for (String fehlerMessage :
                     fehlerliste) {
                 try {
-                    writer.schreibeAusgabe(new FehlerResult(fehlerMessage), OutputTyp.MONITOR, ausgabedateiname);
-                    writer.schreibeAusgabe(new FehlerResult(fehlerMessage), OutputTyp.DATEI, ausgabedateiname);
+                    IWriter fileWriter = new CustomFileWriter();
+                    IWriter consoleWriter = new ConsoleWriter();
+                    fileWriter.schreibeAusgabe(fehlerMessage, ausgabedateiname);
+                    consoleWriter.schreibeAusgabe(fehlerMessage, ausgabedateiname);
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
                 }
@@ -62,16 +60,21 @@ public class Programm {
         try {
             FeldReader reader = new FeldReader(eingabedateiname);
             String gesamtInhalt = reader.lies();
-            // TODO Konvertiere zu model Object
-            Object modelObj = InputConverter.convertInputToFeld(gesamtInhalt);
-            Result result = new BacktrackingStrategie(modelObj).findeMinimaleAntennen();
-            FeldWriter writer = new FeldWriter();
-            writer.schreibeAusgabe(result, OutputTyp.MONITOR, ausgabedateiname);
-            writer.schreibeAusgabe(result, OutputTyp.DATEI, ausgabedateiname);
+
+            Object modelObj = InputOutputConverter.convertInputToDataObject(gesamtInhalt);// TODO Typ
+
+            Result ergebnis = new BacktrackingStrategie(modelObj).findeMinimaleAntennen();
+
+            String ausgabetext = InputOutputConverter.convertResultToOutput(ergebnis,OutputTyp.MONITOR,ausgabedateiname);// bisher fuer jeden Typ gleiche Konvertierung und filename egal, evtl aus Methode entfernen
+
+            IWriter fileWriter = new CustomFileWriter();
+            IWriter consoleWriter = new ConsoleWriter();
+            fileWriter.schreibeAusgabe(ausgabetext, ausgabedateiname);
+            consoleWriter.schreibeAusgabe(ausgabetext, ausgabedateiname);
+            return true;
         } catch (Exception e) {
             fehlerliste.add(e.getMessage());
             return false;
         }
-        return true;
     }
 }

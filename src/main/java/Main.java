@@ -18,7 +18,6 @@ public class Main {
             System.exit(1);
         }
 
-
         if (eingabedateiname != null) {
             new Programm().starteProgramm(eingabedateiname);
         } else {
