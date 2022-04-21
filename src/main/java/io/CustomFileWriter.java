@@ -9,18 +9,24 @@ import java.io.IOException;
  * Klasse zum Schreiben des IResults in Textdatei/Konsole
  */
 public class CustomFileWriter implements IWriter {
+    private final String ausgabedateiname;
 
-    public void schreibeAusgabe(String ausgabe, String ausgabedateiname) throws IOException {
+    public CustomFileWriter(String ausgabedateiname) {
+        this.ausgabedateiname = ausgabedateiname;
+    }
+
+    public void schreibeAusgabe(String ausgabe) throws EingabeAusgabeException {
         File file = new File(ausgabedateiname + "_Ausgabe.txt");
         if (file.exists() && !file.canWrite()) {
-            throw new TechnischeException("Technischer Fehler! Keine Schreibrechte auf Ausgabedatei");
+            throw new EingabeAusgabeException("Technischer Fehler: keine Schreibrechte auf Ausgabedatei");
         }
-        FileWriter writer = new FileWriter(file);
+
         try {
+            FileWriter writer = new FileWriter(file);
             writer.append(ausgabe);
             writer.close();
         } catch (IOException e) {
-            throw new TechnischeException("Technischer Fehler! Datei ist nicht beschreibbar");
+            throw new EingabeAusgabeException("Technischer Fehler: Datei ist nicht beschreibbar");
         }
     }
 }

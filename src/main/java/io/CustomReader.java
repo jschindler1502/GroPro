@@ -9,24 +9,24 @@ import java.io.IOException;
 /**
  * Klasse zum Lesen des Eingabeinhalts aus einer Textdatei
  */
-public class FeldReader implements IReader {
+public class CustomReader implements IReader {
 
-    private String eingabedateiname;
+    private final String eingabedateiname;
 
-    public FeldReader(String eingabedateiname) {
+    public CustomReader(String eingabedateiname) {
         this.eingabedateiname = eingabedateiname;
     }
 
     @Override
-    public String lies() throws IOException {
+    public String lies() throws EingabeAusgabeException {
         File eingabedatei = new File(this.eingabedateiname);
         // Datei muss existieren
         if (!eingabedatei.exists()) {
-            throw new TechnischeException("Technischer Fehler! Eingabedatei existiert nicht");
+            throw new EingabeAusgabeException("Eingabe/Ausgabe Fehler: Eingabedatei existiert nicht");
         }
         // Datei muss lesbar sein
         if (!eingabedatei.canRead()) {
-            throw new TechnischeException("Technischer Fehler! Eingabedatei ist nicht lesbar");
+            throw new EingabeAusgabeException("Eingabe/Ausgabe Fehler: Eingabedatei ist nicht lesbar");
         }
         BufferedReader reader;
         String zeile = "";
@@ -44,7 +44,7 @@ public class FeldReader implements IReader {
             }
             reader.close();
         } catch (IOException ex) {
-            throw new TechnischeException("Technischer Fehler! Fehler beim Lesen der Eingabedatei");
+            throw new EingabeAusgabeException("Eingabe/Ausgabe Fehler: beim Lesen der Eingabedatei");
         }
         return gesamtInhalt.toString();
     }

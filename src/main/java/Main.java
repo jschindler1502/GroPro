@@ -1,5 +1,5 @@
 import controller.Programm;
-import io.TechnischeException;
+import io.EingabeAusgabeException;
 
 
 public class Main {
@@ -11,17 +11,26 @@ public class Main {
         if (args.length == 1) {
             eingabedateiname = args[0];
         } else if (args.length == 0) {
-            System.err.println(new TechnischeException("Technischer Fehler! Keine Eingabedatei angegeben.\n Aufruf: java -jar Programm.java [eingabedatei]").getMessage());
+            System.err.println("Eingabe/Ausgabe Fehler: keine Eingabedatei angegeben.\n Aufruf: java -jar Programm.java [eingabedatei]");
             System.exit(1);
         } else {
-            System.err.println(new TechnischeException("Technischer Fehler! Zu viele Parameter angegeben.\n Aufruf: java -jar Programm.java [eingabedatei]").getMessage());
+            System.err.println("Eingabe/Ausgabe Fehler: zu viele Parameter angegeben.\n Aufruf: java -jar Programm.java [eingabedatei]");
             System.exit(1);
         }
 
         if (eingabedateiname != null) {
-            new Programm().starteProgramm(eingabedateiname);
+            try {
+                new Programm().starteProgramm(eingabedateiname);
+            } catch (EingabeAusgabeException e) {
+                System.err.println(e.getMessage());
+                System.exit(1);
+            } catch (Exception e) {
+                System.err.println("Technischer Fehler: " + e.getMessage());
+                System.exit(1);
+            }
+
         } else {
-            System.err.println(new TechnischeException("Technischer Fehler! Eingabedatei ist nicht lesbar").getMessage());
+            System.err.println("Eingabe/Ausgabe Fehler: ungueltige Eingabedatei");
         }
 
     }

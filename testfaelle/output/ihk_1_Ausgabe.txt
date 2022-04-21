@@ -1,1 +1,1 @@
-Erfolg
+Syntaxfehler: die ersten 3 Zeilen des Dokuments müssen Kommentare sein.

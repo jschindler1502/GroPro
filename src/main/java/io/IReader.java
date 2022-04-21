@@ -9,5 +9,5 @@ import java.io.IOException;
  */
 public interface IReader {
 
-    String lies() throws IOException;
+    String lies() throws EingabeAusgabeException;
 }

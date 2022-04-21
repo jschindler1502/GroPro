@@ -1,10 +1,9 @@
 package io;
 
-import java.io.IOException;
 
 public class ConsoleWriter implements IWriter {
 
-    public void schreibeAusgabe(String ausgabe, String ausgabedateiname) throws IOException {
+    public void schreibeAusgabe(String ausgabe) {
         System.out.println(ausgabe);
     }
 }

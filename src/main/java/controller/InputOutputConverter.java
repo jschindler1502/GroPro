@@ -1,8 +1,8 @@
 package controller;
 
-import io.InvalidSyntaxException;
 import io.OutputTyp;
 import model.Result;
+import model.ValidierungsException;
 
 import java.io.IOException;
 
@@ -15,9 +15,9 @@ public class InputOutputConverter {
     /**
      * @param gesamtInhalt
      * @return das Data Object, was aus dem Eingabeinhalt erstellt wird
-     * @throws IOException
+     * @throws ValidierungsException
      */
-    public static Object convertInputToDataObject(String gesamtInhalt) throws IOException {
+    public static Object convertInputToDataObject(String gesamtInhalt) throws ValidierungsException {
 
 
         StringBuilder beschreibung = new StringBuilder();
@@ -25,7 +25,7 @@ public class InputOutputConverter {
 
 
         if (gesamtInhalt.length() == 0) {
-            throw new InvalidSyntaxException("Syntaxfehler! Dokument darf nicht leer sein.");
+            throw new ValidierungsException("Syntaxfehler: Dokument darf nicht leer sein.");
         }
 
         String[] splittedContent = gesamtInhalt.split("[\\r\\n]+");
@@ -39,7 +39,7 @@ public class InputOutputConverter {
                     beschreibung.append("\n");
                 }
             } else {
-                throw new InvalidSyntaxException("Syntaxfehler! Die ersten 3 Zeilen des Dokuments müssen Kommentare sein.");
+                throw new ValidierungsException("Syntaxfehler: die ersten 3 Zeilen des Dokuments müssen Kommentare sein.");
             }
 
         }
