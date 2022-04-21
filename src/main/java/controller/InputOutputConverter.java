@@ -8,17 +8,16 @@ import java.io.IOException;
 
 public class InputOutputConverter {
 
-    private InputOutputConverter(){
+    private InputOutputConverter() {
 
     }
 
     /**
-     *
      * @param gesamtInhalt
      * @return das Data Object, was aus dem Eingabeinhalt erstellt wird
      * @throws IOException
      */
-    public static  Object convertInputToDataObject(String gesamtInhalt) throws IOException {
+    public static Object convertInputToDataObject(String gesamtInhalt) throws IOException {
 
 
         StringBuilder beschreibung = new StringBuilder();
@@ -33,7 +32,7 @@ public class InputOutputConverter {
 
         // Beschreibung setzen
         for (int i = 0; i < 3; i++) {
-            if(splittedContent[i].charAt(0) == ';'){
+            if (splittedContent[i].charAt(0) == ';') {
                 String temp = splittedContent[i].substring(1).trim();
                 beschreibung.append(temp);
                 if (i != 2) {
@@ -62,12 +61,14 @@ public class InputOutputConverter {
     /**
      * Erstellt Ausgabe je nach gewuenschtem Ausgabetyp
      *
-     * @param ergebnis Das Ergebnis des Algorithmus
-     * @param typ Ausgabetyp
+     * @param ergebnis         Das Ergebnis des Algorithmus
+     * @param typ              Ausgabetyp
      * @param ausgabedateiname Name der Ausgabedatei inklusive Pfad
      */
-    public static String convertResultToOutput(Result ergebnis, OutputTyp typ, String ausgabedateiname) {
+    public static String convertResultToOutput(Result ergebnis, OutputTyp typ, String ausgabedateiname) { // TODO evtl braucht man den ausgabedateinamen nicht
         // bastelt String aus Result
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Erfolg");
+        return sb.toString();
     }
 }

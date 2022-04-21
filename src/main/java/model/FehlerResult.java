@@ -12,10 +12,4 @@ public class FehlerResult implements IResult{
         this.message = message;
     }
 
-    @Override
-    public String getGesamtAusgabe() {
-        return this.message;
-    }
-
-
 }

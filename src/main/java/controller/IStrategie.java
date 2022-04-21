@@ -7,5 +7,5 @@ import model.Result;
  */
 public interface IStrategie {
 
-    Result findeMinimaleAntennen();
+    Result findeResult();
 }

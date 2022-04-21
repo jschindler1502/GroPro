@@ -1,7 +1,6 @@
 package controller;
 
 import io.*;
-import model.FehlerResult;
 import model.Result;
 
 import java.io.IOException;
@@ -63,7 +62,7 @@ public class Programm {
 
             Object modelObj = InputOutputConverter.convertInputToDataObject(gesamtInhalt);// TODO Typ
 
-            Result ergebnis = new BacktrackingStrategie(modelObj).findeMinimaleAntennen();
+            Result ergebnis = new BacktrackingStrategie(modelObj).findeResult();
 
             String ausgabetext = InputOutputConverter.convertResultToOutput(ergebnis,OutputTyp.MONITOR,ausgabedateiname);// bisher fuer jeden Typ gleiche Konvertierung und filename egal, evtl aus Methode entfernen
 

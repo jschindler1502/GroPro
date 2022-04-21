@@ -23,7 +23,7 @@ public class BacktrackingStrategie implements IStrategie {
      * @return Result inklusive //TODO
      */
     @Override
-    public Result findeMinimaleAntennen() {
+    public Result findeResult() {
         for (Object punkt : allePunkte) {
             sucheRekursiv(punkt);
         }
