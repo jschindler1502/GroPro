@@ -1,11 +1,11 @@
 package controller;
 
-import model.Result;
+import model.Ergebnis;
 
 /**
  * Schnittstelle zur Abstrahierung des Algorithmus zur Antennenfindung
  */
 public interface IStrategie {
 
-    Result findeResult();
+    Ergebnis findeResult() throws AlgorithmusException;
 }

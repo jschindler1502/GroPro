@@ -1,7 +1,6 @@
 package controller;
 
-import model.AlgorithmusException;
-import model.Result;
+import model.Ergebnis;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -24,13 +23,13 @@ public class BacktrackingStrategie implements IStrategie {
      * @return Result inklusive //TODO
      */
     @Override
-    public Result findeResult() throws AlgorithmusException{
+    public Ergebnis findeResult() throws AlgorithmusException{
         for (Object punkt : allePunkte) {
             sucheRekursiv(punkt);
         }
 
         if (!Objects.equals(best, new Object())) {
-            return new Result();// TODO mitgeben, was result ist
+            return new Ergebnis();// TODO mitgeben, was result ist
         } else {
             throw new AlgorithmusException("Fehler im Algorithmus: der Algorithmus findet keine Loesung!");
         }

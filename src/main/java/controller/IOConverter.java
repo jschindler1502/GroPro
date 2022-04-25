@@ -1,14 +1,11 @@
 package controller;
 
-import io.OutputTyp;
-import model.Result;
-import model.ValidierungsException;
+import io.AusgabeTyp;
+import model.Ergebnis;
 
-import java.io.IOException;
+public class IOConverter {
 
-public class InputOutputConverter {
-
-    private InputOutputConverter() {
+    private IOConverter() {
 
     }
 
@@ -65,7 +62,7 @@ public class InputOutputConverter {
      * @param typ              Ausgabetyp
      * @param ausgabedateiname Name der Ausgabedatei inklusive Pfad
      */
-    public static String convertResultToOutput(Result ergebnis, OutputTyp typ, String ausgabedateiname) { // TODO evtl braucht man den ausgabedateinamen nicht
+    public static String convertResultToOutput(Ergebnis ergebnis, AusgabeTyp typ, String ausgabedateiname) { // TODO evtl braucht man den ausgabedateinamen nicht
         // bastelt String aus Result
         StringBuilder sb = new StringBuilder();
         sb.append("Erfolg");

@@ -8,10 +8,10 @@ import java.io.IOException;
 /**
  * Klasse zum Schreiben des IResults in Textdatei/Konsole
  */
-public class CustomFileWriter implements IWriter {
+public class DateiWriter implements IWriter {
     private final String ausgabedateiname;
 
-    public CustomFileWriter(String ausgabedateiname) {
+    public DateiWriter(String ausgabedateiname) {
         this.ausgabedateiname = ausgabedateiname;
     }
 

@@ -1,5 +1,6 @@
 import controller.Programm;
-import io.EingabeAusgabeException;
+
+import java.io.IOException;
 
 
 public class Main {
@@ -21,7 +22,7 @@ public class Main {
         if (eingabedateiname != null) {
             try {
                 new Programm().starteProgramm(eingabedateiname);
-            } catch (EingabeAusgabeException e) {
+            } catch (IOException e) {
                 System.err.println(e.getMessage());
                 System.exit(1);
             } catch (Exception e) {
