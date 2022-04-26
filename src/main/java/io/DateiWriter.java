@@ -15,10 +15,10 @@ public class DateiWriter implements IWriter {
         this.ausgabedateiname = ausgabedateiname;
     }
 
-    public void schreibeAusgabe(String ausgabe) throws EingabeAusgabeException {
+    public void schreibeAusgabe(String ausgabe) throws IOException {
         File file = new File(ausgabedateiname + "_Ausgabe.txt");
         if (file.exists() && !file.canWrite()) {
-            throw new EingabeAusgabeException("Technischer Fehler: keine Schreibrechte auf Ausgabedatei");
+            throw new IOException("Technischer Fehler: keine Schreibrechte auf Ausgabedatei");
         }
 
         try {
@@ -26,7 +26,7 @@ public class DateiWriter implements IWriter {
             writer.append(ausgabe);
             writer.close();
         } catch (IOException e) {
-            throw new EingabeAusgabeException("Technischer Fehler: Datei ist nicht beschreibbar");
+            throw new IOException("Technischer Fehler: Datei ist nicht beschreibbar");
         }
     }
 }
