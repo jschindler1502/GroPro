@@ -25,35 +25,53 @@ public class IOConverter {
             throw new ValidierungsException("Syntaxfehler: Dokument darf nicht leer sein.");
         }
 
-        String[] splittedContent = gesamtInhalt.split("[\\r\\n]+");
+        String[] aufgeteilterInhalt = gesamtInhalt.split("[\\r\\n]+");
 
-        // Beschreibung setzen
-        for (int i = 0; i < 3; i++) {
-            if (splittedContent[i].charAt(0) == ';') {
-                String temp = splittedContent[i].substring(1).trim();
-                beschreibung.append(temp);
-                if (i != 2) {
-                    beschreibung.append("\n");
+        for (int i = 0; i < aufgeteilterInhalt.length; i++) {
+            String zeile = aufgeteilterInhalt[i].trim();
+
+            // Behandlung von Kommentaren
+            if (zeile.startsWith("//")) {
+
+                // TODO Behandlung von Beschreibung
+                if (zeile.charAt(2) == '+') {
+                    String temp = aufgeteilterInhalt[i].substring(3).trim();
+                    beschreibung.append(temp).append("\n"); // dadurch mehrere Zeilen Beschreibung moeglich
+                } else {
+                    // Ueberspringe Kommentarzeilen
+                    continue;
                 }
             } else {
-                throw new ValidierungsException("Syntaxfehler: die ersten 3 Zeilen des Dokuments müssen Kommentare sein.");
+                // TODO Behandlung von Inhaltszeile
             }
 
         }
-
-        for (int i = 3; i < splittedContent.length; i++) {
-            String line = splittedContent[i];
-            // Ueberspringe Kommentarzeilen
-            if (line.startsWith(";")) {
-                continue;
-            }
-            // An Leerstellen trennen
-            String[] values = line.split("[ ]+");
-            // TODO Syntax und Semantikueberpruefung, sonst DS setzen
+        if (beschreibung.isEmpty()) {
+            throw new ValidierungsException("Syntaxfehler: Beschreibung fehlt, es gibt keine Kommentarzeile beginnend mit //+.");
         }
+        // TODO Validieren, dass DS richtig gesetzt und nicht leer oder so
+
 
         return new Object();
     }
+
+
+    /* Hilfsmethoden zur Validierung */
+    private static boolean istNatuerlicheZahl(String wert) {
+        if (wert == null) {
+            return false;
+        }
+        try {
+            int intWert = Integer.parseInt(wert);
+            if (intWert <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Erstellt Ausgabe je nach gewuenschtem Ausgabetyp
