@@ -18,7 +18,7 @@ public class DateiWriter implements IWriter {
     public void schreibeAusgabe(String ausgabe) throws IOException {
         File file = new File(ausgabedateiname + "_Ausgabe.txt");
         if (file.exists() && !file.canWrite()) {
-            throw new IOException("Technischer Fehler: keine Schreibrechte auf Ausgabedatei");
+            throw new IOException("Eingabe/Ausgabe Fehler: keine Schreibrechte auf Ausgabedatei");
         }
 
         try {
@@ -26,7 +26,7 @@ public class DateiWriter implements IWriter {
             writer.append(ausgabe);
             writer.close();
         } catch (IOException e) {
-            throw new IOException("Technischer Fehler: Datei ist nicht beschreibbar");
+            throw new IOException("Eingabe/Ausgabe Fehler: beim Schreiben der Eingabedatei");
         }
     }
 }

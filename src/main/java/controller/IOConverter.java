@@ -10,9 +10,11 @@ public class IOConverter {
     }
 
     /**
-     * @param gesamtInhalt
-     * @return das Data Object, was aus dem Eingabeinhalt erstellt wird
-     * @throws ValidierungsException
+     * statische Methode zur Konvertierung von EIngabeinhalt zu TODO Data Object
+     *
+     * @param gesamtInhalt die Zeichenkette, die aus dem EIngabemedium eingelesen wurde
+     * @return das TODO Data Object, was aus dem Eingabeinhalt erstellt wird
+     * @throws ValidierungsException im Falle von Syntax oder Sematikfehlern
      */
     public static Object convertInputToDataObject(String gesamtInhalt) throws ValidierungsException {
 
@@ -47,7 +49,7 @@ public class IOConverter {
 
         }
         if (beschreibung.isEmpty()) {
-            throw new ValidierungsException("Syntaxfehler: Beschreibung fehlt, es gibt keine Kommentarzeile beginnend mit //+.");
+            throw new ValidierungsException("Syntaxfehler: Beschreibung fehlt oder ist nicht korrekt als solche gekennzeichnet. Die Beschreibungszeile beginnt mit //+.");
         }
         // TODO Validieren, dass DS richtig gesetzt und nicht leer oder so
 
@@ -55,8 +57,29 @@ public class IOConverter {
         return new Object();
     }
 
+    /**
+     * Erstellt Ausgabe je nach gewuenschtem Ausgabetyp
+     *
+     * @param ergebnis         Das Ergebnis des Algorithmus
+     * @param typ              Ausgabetyp
+     * @param ausgabedateiname Name der Ausgabedatei inklusive Pfad
+     */
+    public static String convertResultToOutput(Ergebnis ergebnis, AusgabeTyp typ, String ausgabedateiname) { // TODO evtl braucht man den ausgabedateinamen nicht
+        // bastelt String aus Result
+        StringBuilder sb = new StringBuilder();
+        sb.append("Erfolg");
+        return sb.toString();
+    }
+
 
     /* Hilfsmethoden zur Validierung */
+
+    /**
+     * statische Hilfsmethode, die zurueckgibt, ob die uebergebene Zeichenkette ein Element der natuerlichen Zahlen ist
+     *
+     * @param wert die zu pruefende Zeichenkette
+     * @return true, falls der Inhalt von wert eine natuerliche Zahl ist
+     */
     private static boolean istNatuerlicheZahl(String wert) {
         if (wert == null) {
             return false;
@@ -73,17 +96,4 @@ public class IOConverter {
     }
 
 
-    /**
-     * Erstellt Ausgabe je nach gewuenschtem Ausgabetyp
-     *
-     * @param ergebnis         Das Ergebnis des Algorithmus
-     * @param typ              Ausgabetyp
-     * @param ausgabedateiname Name der Ausgabedatei inklusive Pfad
-     */
-    public static String convertResultToOutput(Ergebnis ergebnis, AusgabeTyp typ, String ausgabedateiname) { // TODO evtl braucht man den ausgabedateinamen nicht
-        // bastelt String aus Result
-        StringBuilder sb = new StringBuilder();
-        sb.append("Erfolg");
-        return sb.toString();
-    }
 }
