@@ -59,6 +59,5 @@ public class Programm {
             dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird EingabeAusgabeException geworfen, in Main gefangen
             konsolenWriter.schreibeAusgabe(e.getMessage());
         }
-
     }
 }
