@@ -7,10 +7,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String eingabedateiname = null;
+        String eingabeordner = null; // "testfaelle/input/0.txt"
 
         if (args.length == 1) {
-            eingabedateiname = args[0];
+            eingabeordner = args[0];
         } else if (args.length == 0) {
             System.err.println("Eingabe/Ausgabe Fehler: keine Eingabedatei angegeben.\n Aufruf: java -jar Programm.java [eingabedatei]");
             System.exit(1);
@@ -19,9 +19,9 @@ public class Main {
             System.exit(1);
         }
 
-        if (eingabedateiname != null) {
+        if (eingabeordner != null) {
             try {
-                new SignalauswertungsProgramm().starteProgramm(eingabedateiname);
+                new SignalauswertungsProgramm(eingabeordner).starteProgramm();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 System.exit(1);

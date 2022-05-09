@@ -6,7 +6,7 @@ public class Messwert {
     private int x_schlange;
     private double x_hut;
     private double x;
-    private double y;
+    private double y; // wird normiert
     private double y_einhuellende;
 
     public Messwert(int x_schlange, int y) {
@@ -52,7 +52,7 @@ public class Messwert {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) { // TODO auch y, da x mehrfach
         if (this == o) return true;
         if (!(o instanceof Messwert)) return false;
         Messwert messwert = (Messwert) o;

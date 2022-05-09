@@ -3,19 +3,53 @@ package controller;
 import io.*;
 import model.Datensatz;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Programm zur Ausfuehrung der Signalauswertung
  */
 public class SignalauswertungsProgramm {
+    final private String eingabeordner;
+    private ArrayList<String> offeneDateien = new ArrayList<>(); // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
+    private ArrayList<Datensatz> konvertierteDatensaetze = new ArrayList<>();
+    private ArrayList<Datensatz> verarbeiteteDatensaetze = new ArrayList<>();
+    private ArrayList<Datensatz> geschlosseneDateien = new ArrayList<>(); // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
+
+
+    private String aktuellGeleseneDatei;
+    private String aktuellGelesenerInhalt;
+
+
+    /**
+     * @param eingabeordner Name des Ordners inklusive Pfad, in dem sich die Eingabedateien befinden
+     */
+    public SignalauswertungsProgramm(String eingabeordner) throws IOException {
+        this.eingabeordner = eingabeordner;
+        /*File folder = new File(eingabeordner);
+        File[] listOfFiles = folder.listFiles();
+        if(listOfFiles == null || listOfFiles.length == 0){
+            throw new IOException("Technischer Fehler: es wurden keine Eingabedateien im Ordner /testfaelle/input hinterlegt.");
+        }
+        for (File listOfFile : listOfFiles) {
+            if (listOfFile.isFile()) {
+                offeneDateien.add(listOfFile.getName());
+            }
+        }*/
+
+//        Thread einleseThread = new Thread();
+//        Thread konvertiereThread = new Thread();
+//        Thread verarbeiteThread = new Thread();
+//        Thread ausleseThread = new Thread();
+    }
 
     /**
      * Methode zum Starten des Programms mit allen Nebenlaeufigkeiten
-     *
-     * @param eingabeordner Name des Ordners inklusive Pfad, in dem sich die Eingabedateien befinden
      */
-    public void starteProgramm(String eingabeordner) throws IOException {
+    public void starteProgramm() throws IOException {
+
+
         String eingabedatei_TEST = eingabeordner;
         String ausgabedateiname = eingabedatei_TEST.replace("input", "output");
 
@@ -24,31 +58,41 @@ public class SignalauswertungsProgramm {
             indexEnde = eingabedatei_TEST.length();
         }
 
-        ausgabedateiname= ausgabedateiname.substring(0, indexEnde )+ "out"+ ausgabedateiname.substring(indexEnde);
-        System.out.println("in programm" + ausgabedateiname);
-        laufeProgramm(eingabedatei_TEST, ausgabedateiname);
+        ausgabedateiname = ausgabedateiname.substring(0, indexEnde) + "out" + ausgabedateiname.substring(indexEnde);
+
+
+        // zu Testzwecken:
+        laufeProgrammMitEinemDatensatz(eingabeordner);
     }
 
+    private void leseEin(){
+        for (String eingabedateiname :
+                offeneDateien) {
+
+        }
+    }
 
     /**
-     * Methode, die den eigentlichen Programmablauf uebernimmt
-     *
-     * @param eingabedateiname Name der Eingabedatei inklusive Pfad
-     * @param ausgabedateiname Name der Ausgabedatei inklusive Pfad
+     * nur zu Testzwecken
      */
-    private void laufeProgramm(String eingabedateiname, String ausgabedateiname) throws IOException {
+    private void laufeProgrammMitEinemDatensatz(String eingabedatei_TEST) throws IOException {
+        String ausgabedateiname = eingabedatei_TEST.replace("input", "output");
+
+        int indexEnde = eingabedatei_TEST.lastIndexOf('.');
+        if (indexEnde == -1) {
+            indexEnde = eingabedatei_TEST.length();
+        }
+
+        ausgabedateiname = ausgabedateiname.substring(0, indexEnde) + "out" + ausgabedateiname.substring(indexEnde);
         try {
-            DateiReader reader = new DateiReader(eingabedateiname);
+            DateiReader reader = new DateiReader(eingabedatei_TEST);
             String gesamtInhalt = reader.lies();
+            Datensatz d = IConverter.convertInputToDatensatz(gesamtInhalt, eingabedatei_TEST);
 
-            Datensatz d = IConverter.convertInputToDatensatz(gesamtInhalt, eingabedateiname);// TODO Typ
+            Auswerter auswerter = new Auswerter(d);
+            auswerter.werteDatensatzAus();
 
-            // long msstart = System.currentTimeMillis()
-            // TODO Threads
-            //long msEnd = System.currentTimeMillis();
-            //System.out.println("Die Kalkulationszeit beträgt " + (msEnd - msstart) + "ms");
             String ausgabetext = OConverter.convertDatensatzToOutput(d);
-            d.werteDatensatzAus();
             IWriter dateiWriter = new DateiWriter(ausgabedateiname);
             dateiWriter.schreibeAusgabe(ausgabetext);
         } catch (ValidierungsException | AlgorithmusException e) { // in diesem Fall in Konsole und Datei schreiben

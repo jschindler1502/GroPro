@@ -22,7 +22,6 @@ public class DateiWriter implements IWriter {
         }
 
         try {
-            System.out.println(ausgabedateiname);
             FileWriter writer = new FileWriter(file);
             writer.append(ausgabe);
             writer.close();

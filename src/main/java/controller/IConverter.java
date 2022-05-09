@@ -33,9 +33,7 @@ public class IConverter {
             String zeile = s.trim();
 
             // Ueberspringe Kommentarzeilen
-            if (zeile.startsWith("#")) {
-                continue;
-            } else {
+            if (!zeile.startsWith("#")) {
                 String[] aufgeteilteZeile = zeile.split("[\\r\\n\\t]+"); // TODO ist das richtig
                 if(aufgeteilteZeile.length != 2){
                     System.out.println(Arrays.toString(aufgeteilteZeile));
@@ -53,7 +51,10 @@ public class IConverter {
         if(messwerte.size() == 0){
             throw new ValidierungsException("Syntaxfehler: es wurden keine Messwerte eingegeben.");
         }
-        return new Datensatz(eingabedateiname, messwerte);
+
+        Messwert[] mwArr= new Messwert[messwerte.size()];
+        mwArr = messwerte.toArray(mwArr);
+        return new Datensatz(eingabedateiname, mwArr);
     }
 
 
@@ -70,8 +71,12 @@ public class IConverter {
             return false;
         }
         try {
+            double doubleWert= Double.parseDouble(wert);
+            if (doubleWert % 1 != 0){
+                throw new NumberFormatException();
+            }
+
             int intWert = Integer.parseInt(wert);
-            // TODO ueberpruefen dass nicht gerundet wurde
             if (intWert <= 0) {
                 throw new NumberFormatException();
             }
