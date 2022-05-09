@@ -1,4 +1,4 @@
-import controller.Programm;
+import controller.SignalauswertungsProgramm;
 
 import java.io.IOException;
 
@@ -21,12 +21,14 @@ public class Main {
 
         if (eingabedateiname != null) {
             try {
-                new Programm().starteProgramm(eingabedateiname);
+                new SignalauswertungsProgramm().starteProgramm(eingabedateiname);
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 System.exit(1);
             } catch (Exception e) {
-                System.err.println("Technischer Fehler: " + e.getMessage());
+                e.printStackTrace();
+                // TODO wieder einkommentieren
+                // System.err.println("Technischer Fehler: " + e.getMessage());
                 System.exit(1);
             }
 

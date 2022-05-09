@@ -8,13 +8,7 @@ IF NOT EXIST %jarDat% GOTO NOJAR
 IF NOT EXIST %in% GOTO NOINPUT
 
 DEL /q %out%
-FOR %%i IN (%in%*) DO (
-	ECHO Die Datei %%i wurde verarbeitet.
-	java -jar %jarDat% "%%i"
-	ECHO ---------------------------
-)
-ECHO Alle Dateien wurden verarbeitet.
-GOTO ENDE
+java -jar %jarDat% "%%i"
 
 
 :NOJAR

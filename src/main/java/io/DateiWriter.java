@@ -16,17 +16,18 @@ public class DateiWriter implements IWriter {
     }
 
     public void schreibeAusgabe(String ausgabe) throws IOException {
-        File file = new File(ausgabedateiname + "_Ausgabe.txt");
+        File file = new File(ausgabedateiname );
         if (file.exists() && !file.canWrite()) {
             throw new IOException("Eingabe/Ausgabe Fehler: keine Schreibrechte auf Ausgabedatei");
         }
 
         try {
+            System.out.println(ausgabedateiname);
             FileWriter writer = new FileWriter(file);
             writer.append(ausgabe);
             writer.close();
         } catch (IOException e) {
-            throw new IOException("Eingabe/Ausgabe Fehler: beim Schreiben der Eingabedatei");
+            throw new IOException("Eingabe/Ausgabe Fehler: beim Schreiben der Ausgabedatei");
         }
     }
 }

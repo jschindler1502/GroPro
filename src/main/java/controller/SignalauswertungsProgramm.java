@@ -1,31 +1,32 @@
 package controller;
 
 import io.*;
-import model.Ergebnis;
+import model.Datensatz;
 
 import java.io.IOException;
 
 /**
- * Programm zur Ausfuehrung der //TODO
+ * Programm zur Ausfuehrung der Signalauswertung
  */
-public class Programm {
+public class SignalauswertungsProgramm {
 
     /**
-     * Methode zum Starten des Programms
+     * Methode zum Starten des Programms mit allen Nebenlaeufigkeiten
      *
-     * @param eingabedateiname Name der Eingabedatei inklusive Pfad
+     * @param eingabeordner Name des Ordners inklusive Pfad, in dem sich die Eingabedateien befinden
      */
-    public void starteProgramm(String eingabedateiname) throws IOException {
+    public void starteProgramm(String eingabeordner) throws IOException {
+        String eingabedatei_TEST = eingabeordner;
+        String ausgabedateiname = eingabedatei_TEST.replace("input", "output");
 
-        String ausgabedateiname = eingabedateiname.replace("input", "output");
-        int indexEnde = eingabedateiname.lastIndexOf('.');
+        int indexEnde = eingabedatei_TEST.lastIndexOf('.');
         if (indexEnde == -1) {
-            indexEnde = eingabedateiname.length();
+            indexEnde = eingabedatei_TEST.length();
         }
-        ausgabedateiname = ausgabedateiname.substring(0, indexEnde + 1);
 
-        laufeProgramm(eingabedateiname, ausgabedateiname);
-
+        ausgabedateiname= ausgabedateiname.substring(0, indexEnde )+ "out"+ ausgabedateiname.substring(indexEnde);
+        System.out.println("in programm" + ausgabedateiname);
+        laufeProgramm(eingabedatei_TEST, ausgabedateiname);
     }
 
 
@@ -40,19 +41,16 @@ public class Programm {
             DateiReader reader = new DateiReader(eingabedateiname);
             String gesamtInhalt = reader.lies();
 
-            Object modelObj = IOConverter.convertInputToDataObject(gesamtInhalt);// TODO Typ
+            Datensatz d = IConverter.convertInputToDatensatz(gesamtInhalt, eingabedateiname);// TODO Typ
 
             // long msstart = System.currentTimeMillis()
-            Ergebnis ergebnis = new BacktrackingStrategie(modelObj).findeResult();
+            // TODO Threads
             //long msEnd = System.currentTimeMillis();
             //System.out.println("Die Kalkulationszeit beträgt " + (msEnd - msstart) + "ms");
-
-            String ausgabetext = IOConverter.convertResultToOutput(ergebnis, AusgabeTyp.MONITOR, ausgabedateiname);// bisher fuer jeden Typ gleiche Konvertierung und filename egal, evtl aus Methode entfernen
-
+            String ausgabetext = OConverter.convertDatensatzToOutput(d);
+            d.werteDatensatzAus();
             IWriter dateiWriter = new DateiWriter(ausgabedateiname);
-            IWriter konsolenWriter = new KonsoleWriter();
             dateiWriter.schreibeAusgabe(ausgabetext);
-            konsolenWriter.schreibeAusgabe(ausgabetext);
         } catch (ValidierungsException | AlgorithmusException e) { // in diesem Fall in Konsole und Datei schreiben
             IWriter dateiWriter = new DateiWriter(ausgabedateiname);
             IWriter konsolenWriter = new KonsoleWriter();

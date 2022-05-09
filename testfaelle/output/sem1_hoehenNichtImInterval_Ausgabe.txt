@@ -1,1 +1,0 @@
-Syntaxfehler! Die Hoehen muessen als natuerliche Zahlen angegeben werden.
