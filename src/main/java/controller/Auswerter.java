@@ -3,25 +3,48 @@ package controller;
 import model.Datensatz;
 import model.Messwert;
 
-public class Auswerter {
-    final private Datensatz datensatz;
+import java.util.ArrayList;
 
-    public Auswerter(Datensatz datensatz) {
-        this.datensatz = datensatz;
+public class Auswerter implements Runnable {
+    private String aktuellGeleseneDatei;
+    private String aktuellGelesenerInhalt;
+    private ArrayList<String> offeneDateien;
+    private ArrayList<Datensatz> verarbeiteteDatensaetze;
+    private Datensatz datensatz; // TODO dummy
+
+    public Auswerter(String aktuellGeleseneDatei, String aktuellGelesenerInhalt, ArrayList<String> offeneDateien, ArrayList<Datensatz> verarbeiteteDatensaetze) {
+        this.aktuellGeleseneDatei = aktuellGeleseneDatei;
+        this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
+        this.offeneDateien = offeneDateien;
+        this.verarbeiteteDatensaetze = verarbeiteteDatensaetze;
     }
 
-    public void werteDatensatzAus() {
-        normiereUndRechneUm();
-        //System.out.println("normiert und umgerechnet, x_hut =" + datensatz.getMesswertList()[32742].getX_hut() + "y normiert =" + datensatz.getMesswertList()[32742].getY());
 
-        glaette();
-        // System.out.println("geglaettet, x ="+ datensatz.getMesswertList()[32742].getX());
+    public void run() {
+        // TODO iterien?
+        try {
+            this.wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
+        } catch (InterruptedException e) {
+            e.printStackTrace(); // TODO
+        }
+        while (aktuellGeleseneDatei!= null){ // wenn null, ist Einleser fertig
+            if (offeneDateien.contains(aktuellGeleseneDatei)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
 
-        berechneObereEinhuellende();
-        // System.out.println("berechnet ObereEinhuellende, y_obere ="+ datensatz.getMesswertList()[32742].getY_einhuellende());
+                offeneDateien.remove(aktuellGeleseneDatei);
+                datensatz= IConverter.convertInputToDatensatz(aktuellGelesenerInhalt,aktuellGeleseneDatei); // dummy
 
+                normiereUndRechneUm();
 
-        berechneFWHM();
+                glaette();
+
+                berechneObereEinhuellende();
+
+                berechneFWHM();
+                verarbeiteteDatensaetze.add(datensatz);
+
+            }
+        }
+
     }
 
     private void normiereUndRechneUm() {

@@ -12,10 +12,10 @@ import java.util.ArrayList;
  */
 public class SignalauswertungsProgramm {
     final private String eingabeordner;
-    private ArrayList<String> offeneDateien = new ArrayList<>(); // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
-    private ArrayList<Datensatz> konvertierteDatensaetze = new ArrayList<>();
-    private ArrayList<Datensatz> verarbeiteteDatensaetze = new ArrayList<>();
-    private ArrayList<Datensatz> geschlosseneDateien = new ArrayList<>(); // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
+    private volatile ArrayList<String> offeneDateien = new ArrayList<>(); // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
+    private volatile ArrayList<Datensatz> konvertierteDatensaetze = new ArrayList<>();
+    private volatile ArrayList<Datensatz> verarbeiteteDatensaetze = new ArrayList<>();
+    private volatile ArrayList<String> geschlosseneDateien = new ArrayList<>(); // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
 
     private String aktuellGeleseneDatei;
@@ -27,6 +27,7 @@ public class SignalauswertungsProgramm {
      */
     public SignalauswertungsProgramm(String eingabeordner) throws IOException {
         this.eingabeordner = eingabeordner;
+
         File folder = new File(eingabeordner);
         File[] listOfFiles = folder.listFiles();
         if (listOfFiles == null || listOfFiles.length == 0) {
@@ -37,58 +38,40 @@ public class SignalauswertungsProgramm {
                 offeneDateien.add(file.getPath());
             }
         }
-
-
     }
 
     /**
      * Methode zum Starten des Programms mit allen Nebenlaeufigkeiten
      */
     public void starteProgramm() throws IOException {
-        //        Thread einleseThread = new Thread();
-        //        Thread konvertiereThread = new Thread();
-        //        Thread verarbeiteThread = new Thread();
-        //        Thread ausleseThread = new Thread();
+        int anzDateien = offeneDateien.size();
+        Einleser einleser = new Einleser(offeneDateien,aktuellGeleseneDatei,aktuellGelesenerInhalt);
+        Thread einleseThread = new Thread(einleser);
 
-        // zu Testzwecken:
-        for (String eingabedateiname :
-                offeneDateien) {
-            laufeProgrammMitEinemDatensatz(eingabedateiname);
-        }
-    }
+        Auswerter auswerter = new Auswerter(aktuellGeleseneDatei,aktuellGelesenerInhalt,offeneDateien,verarbeiteteDatensaetze);
+        Thread auswerterThread = new Thread(auswerter);
 
-//    private void leseEin() {
-//        for (String eingabedateiname :
-//                offeneDateien) {
-//
-//        }
-//    }
-
-    /**
-     * nur zu Testzwecken
-     */
-    private void laufeProgrammMitEinemDatensatz(String eingabedatei_TEST) throws IOException {
-        String ausgabedateiname = eingabedatei_TEST.replace("input", "output");
-
-        int indexEnde = eingabedatei_TEST.lastIndexOf('.');
-        if (indexEnde == -1) {
-            indexEnde = eingabedatei_TEST.length();
-        }
-
-        ausgabedateiname = ausgabedateiname.substring(0, indexEnde) + "out" + ausgabedateiname.substring(indexEnde);
+        Ausgeber ausgeber = new Ausgeber(verarbeiteteDatensaetze,geschlosseneDateien,anzDateien);
+        Thread ausgeberThread = new Thread(ausgeber);
         try {
-            DateiReader reader = new DateiReader(eingabedatei_TEST);
-            String gesamtInhalt = reader.lies();
-            Datensatz d = IConverter.convertInputToDatensatz(gesamtInhalt, eingabedatei_TEST);
+            // List<String> offeneDateien (noch nicht konverti)
 
-            Auswerter auswerter = new Auswerter(d);
-            auswerter.werteDatensatzAus();
+            // t1
+            // schreibt String geradeGelesenDateiname, String geradeGelesenInhalt
+            einleseThread.start();
 
-            String ausgabetext = OConverter.convertDatensatzToOutput(d);
-            IWriter dateiWriter = new DateiWriter(ausgabedateiname);
-            dateiWriter.schreibeAusgabe(ausgabetext);
+            //t2 nimmt das was geradeGelesen, entfernt aus offeneDatein
+            auswerterThread.start();
+            // schreibt in List<Datensatz> schonVerarbeitet
+
+            //t3 nimmt aus schonVerarbeite, löscht da
+            ausgeberThread.start();
+            // fügt List<String> geschlosseneDateienNamen zu
+
+
+            // if(geschlosseneDateien.length == M) threads.join()
         } catch (ValidierungsException | AlgorithmusException e) { // in diesem Fall in Konsole und Datei schreiben
-            IWriter dateiWriter = new DateiWriter(ausgabedateiname);
+            IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei);
             IWriter konsolenWriter = new KonsoleWriter();
             dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird EingabeAusgabeException geworfen, in Main gefangen
             konsolenWriter.schreibeAusgabe(e.getMessage());
