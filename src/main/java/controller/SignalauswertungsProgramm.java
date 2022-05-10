@@ -17,10 +17,10 @@ import java.util.List;
 
 
 /**
- * Programm zur Ausfuehrung der Signalauswertung, dass drei Nebenlaeufigkeiten ({@link controller.Runnables}) erstellt:
- * 1. Thread fuer das Einlesen der Eingabedateien, bis alle verarbeitet wurden
- * 2. Thread fuer das Verarbetiten, also Konvertieren und Auswerten der Eingabedateien, bis alle verarbeitet wurden
- * 3. Thread fuer das Ausgeben, also Konvertieren und Ausgeben der Datensaetze, bis alle verarbeitet wurden
+ * Programm zur Ausfuehrung der Signalauswertung, dass drei Nebenlaeufigkeiten ({@link controller.Runnables}) erstellt<br>
+ * 1. Thread fuer das Einlesen der Eingabedateien, bis alle verarbeitet wurden<br>
+ * 2. Thread fuer das Verarbetiten, also Konvertieren und Auswerten der Eingabedateien, bis alle verarbeitet wurden<br>
+ * 3. Thread fuer das Ausgeben, also Konvertieren und Ausgeben der Datensaetze, bis alle verarbeitet wurden<br>
  */
 public class SignalauswertungsProgramm {
 
@@ -90,11 +90,11 @@ public class SignalauswertungsProgramm {
 
         long endTime = System.nanoTime();
 
-        System.out.println("Das Programm hat " + (endTime - startTime) / 1000000 + " Millisekunden zum Verarbeiten der " + anzDateien + " Dateien gebraucht.");
+        System.out.println("Das Programm hat " + (endTime - startTime) / 1000000000. + " Sekunden zum Verarbeiten der " + anzDateien + " Dateien gebraucht.");
     }
 
     /**
-     * Methode zum Exceptionhandling:
+     * Methode zum Exceptionhandling:<br>
      * Schreibt Fehlermeldung in Ausgabedatei und Konsole oder nur die Konsole
      *
      * @param e die gefangene Exception: {@link IOException}, {@link controller.Exceptions.AlgorithmusException} oder {@link controller.Exceptions.ValidierungsException}

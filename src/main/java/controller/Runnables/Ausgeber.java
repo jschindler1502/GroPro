@@ -25,8 +25,8 @@ public class Ausgeber implements Runnable {
     }
 
     /**
-     * Methode, die das Ausgeben vornimmt:
-     * Solange noch nicht alle Dateien ausgegeben wurden, hole die verarbeiteten Datensaetze, konvertiere sie und gib sie aus
+     * Methode, die das Ausgeben vornimmt:<br>
+     * Solange noch nicht alle Dateien ausgegeben wurden, hole die verarbeiteten Datensaetze, konvertiere sie und gib sie aus<br>
      * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
      */
     @Override
@@ -35,7 +35,6 @@ public class Ausgeber implements Runnable {
             List<Datensatz> verarbeiteteTemp = new ArrayList<>(verarbeiteteDatensaetze);
             for (Datensatz datensatz :
                     verarbeiteteTemp) {
-                // System.out.println("Ausgeber startet Verarbeitung von " + datensatz.getName());
                 verarbeiteteDatensaetze.remove(datensatz);
 
                 String ausgabetext = IOConverter.convertDatensatzToOutput(datensatz);
@@ -48,7 +47,6 @@ public class Ausgeber implements Runnable {
                 }
 
                 geschlosseneDateien.add(datensatz.getName());
-                // System.out.println("Ausgeber beendet Verarbeitung von " + datensatz.getName());
             }
         }
     }

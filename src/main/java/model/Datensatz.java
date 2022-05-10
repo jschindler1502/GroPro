@@ -1,7 +1,8 @@
 package model;
 
-import controller.Exceptions.AlgorithmusException;
-
+/**
+ * Klasse zum Speichern aller Messwerte zu einem Datensatz und den berechneten Werten der Auswertung
+ */
 public class Datensatz {
     final private String name;
     private final Messwert[] messwertList;
@@ -26,15 +27,6 @@ public class Datensatz {
 
     public double getFWHM() {
         return FWHM;
-    }
-
-    public int getIndexOf(Messwert mw) { // TODO performanz und fehler
-        for (int k = 0; k < N; k++) {
-            if (mw.equals(messwertList[k])) {
-                return k;
-            }
-        }
-        return -1;
     }
 
     private int findMaxInd() {

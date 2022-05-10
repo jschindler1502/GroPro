@@ -1,14 +1,13 @@
 package controller;
 
-import controller.Exceptions.AlgorithmusException;
 import model.Datensatz;
 import model.Messwert;
 
 /**
- * Klasse, die die Ausfuehrung der mathematischen Methoden fuer einen Datensatz uebernimmt
- * 1. Normieren und Umrechnen
- * 2. Glaetten
- * 3. Berechnung der oberen Einhuellenden
+ * Klasse, die die Ausfuehrung der mathematischen Methoden fuer einen Datensatz uebernimmt<br>
+ * 1. Normieren und Umrechnen<br>
+ * 2. Glaetten<br>
+ * 3. Berechnung der oberen Einhuellenden<br>
  * 4. Berechnung der Pulsbreite (FWHM)
  */
 public class Auswertung {
@@ -20,14 +19,12 @@ public class Auswertung {
 
     /**
      * Methode, die nacheinander Schritte 1.-4. ausfuehrt
-     * @return den vollstaendig verarbeiteten Datensatz mit den berechneten Werten
      */
-    public Datensatz werteAus() {
+    public void werteAus() {
         normiereUndRechneUm();
         glaette();
         berechneObereEinhuellende();
         berechneFWHM();
-        return datensatz;
     }
 
     // 1.
@@ -136,5 +133,9 @@ public class Auswertung {
             sum += datensatz.getMesswertList()[k].getY_einhuellende(); // Annahme dass einhuellende y-Werte gemeint
         }
         return (1. / n_grundInt) * sum;
+    }
+
+    public Datensatz getDatensatz() {
+        return datensatz;
     }
 }

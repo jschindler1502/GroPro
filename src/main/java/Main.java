@@ -2,12 +2,14 @@ import controller.SignalauswertungsProgramm;
 
 import java.io.IOException;
 
-
+/**
+ * Klasse nimmt als 1. Parameter den Ordner der Eingabedateien entgegen und startet das Signalauswertungsprogramm
+ */
 public class Main {
 
     public static void main(String[] args) {
 
-        String eingabeordner = null; // "testfaelle/input/0.txt"
+        String eingabeordner = null;
 
         if (args.length == 1) {
             eingabeordner = args[0];

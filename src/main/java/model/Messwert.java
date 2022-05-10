@@ -2,11 +2,14 @@ package model;
 
 import java.util.Objects;
 
+/**
+ * Klasse zum Speichern aller Werte, die zu einem Messwert gehoeren
+ */
 public class Messwert {
     private final int x_schlange;
     private double x_hut;
     private double x;
-    private double y; // wird normiert
+    private double y; // zunaechst int, wird normiert und daher dann double
     private double y_einhuellende;
 
     public Messwert(int x_schlange, int y) {
@@ -52,15 +55,14 @@ public class Messwert {
     }
 
     @Override
-    public boolean equals(Object o) { // TODO auch y, da x mehrfach
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Messwert)) return false;
-        Messwert messwert = (Messwert) o;
-        return getX_schlange() == messwert.getX_schlange();
+        if (!(o instanceof Messwert messwert)) return false;
+        return getX_schlange() == messwert.getX_schlange() && getY() == messwert.getY();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getX_schlange());
+        return Objects.hash(getX_schlange(),getY());
     }
 }

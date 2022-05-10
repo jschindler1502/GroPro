@@ -7,6 +7,9 @@ import model.Messwert;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * statische Klasse zum Konvertieren von Zeichenkette zu {@link Datensatz} und zurueck
+ */
 public class IOConverter {
 
     /**
@@ -61,6 +64,22 @@ public class IOConverter {
         return new Datensatz(eingabedateiname, mwArr);
     }
 
+    /**
+     * Methode die Ausgabezeichenkette aus {@link Datensatz} erstellt
+     *
+     * @param datensatz der um die Auswertung ergaenzte {@link Datensatz}
+     */
+    public static String convertDatensatzToOutput(Datensatz datensatz) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("# FWHM = ").append((float) datensatz.getFWHM()).append(", ").append(datensatz.getIndL()).append(", ").append(datensatz.getIndR()).append("\n");
+        sb.append("# pos\tint\t\tenv\n");
+        for (Messwert mw :
+                datensatz.getMesswertList()) {
+            sb.append((float) mw.getX()).append("\t").append((float) mw.getY()).append("\t\t").append((float) mw.getY_einhuellende()).append("\n");
+        }
+        return sb.toString();
+    }
+
 
     /* Hilfsmethoden zur Validierung */
 
@@ -89,19 +108,5 @@ public class IOConverter {
         return true;
     }
 
-    /**
-     * Methode die Ausgabezeichenkette aus {@link Datensatz} erstellt
-     *
-     * @param datensatz der um die Auswertung ergaenzte {@link Datensatz}
-     */
-    public static String convertDatensatzToOutput(Datensatz datensatz) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("# FWHM = ").append((float) datensatz.getFWHM()).append(", ").append(datensatz.getIndL()).append(", ").append(datensatz.getIndR()).append("\n");
-        sb.append("# pos\tint\t\tenv\n");
-        for (Messwert mw :
-                datensatz.getMesswertList()) {
-            sb.append((float) mw.getX()).append("\t").append((float) mw.getY()).append("\t\t").append((float) mw.getY_einhuellende()).append("\n");
-        }
-        return sb.toString();
-    }
+
 }

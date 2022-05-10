@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Klasse zum Schreiben des IResults in Textdatei/Konsole
+ * Klasse zum Schreiben einer Zeichenkette in Textdatei
  */
 public class DateiWriter implements IWriter {
     private final String eingabedateiName;

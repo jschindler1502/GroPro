@@ -9,7 +9,7 @@ import model.Datensatz;
 import java.util.List;
 
 /**
- * Klasse zum Verarbeiten des Inhalts einer Eingabedatei in einem Thread
+ * Klasse zum Verarbeiten des Inhalts einer Eingabedatei in einem Thread<br>
  * konvertiert den Inhalt in ein Objekt der Klasse {@link Datensatz} und wertet es aus
  */
 public class Verarbeiter implements Runnable {
@@ -26,8 +26,8 @@ public class Verarbeiter implements Runnable {
     }
 
     /**
-     * Methode, die das Verarbeiten vornimmt:
-     * Solange noch zu lesende Dateien im Ordner existieren oder der Einleser einen Inhalt zur Verfuegung stellt,
+     * Methode, die das Verarbeiten vornimmt:<br>
+     * Solange noch zu lesende Dateien im Ordner existieren oder der Einleser einen Inhalt zur Verfuegung stellt,<br>
      * konvertiere diesen und werte ihn aus
      * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
      */
@@ -64,17 +64,15 @@ public class Verarbeiter implements Runnable {
                 continue;
             }
 
-            if (offeneDateien.contains(tempDateiname)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
-                // System.out.println("Verarbeiter startet Verarbeitung von " + tempDateiname);
+            if (offeneDateien.contains(tempDateiname)) { // pruefe, dass aktuellGeleseneDatei noch nicht verarbeitet
                 offeneDateien.remove(tempDateiname);
 
                 Datensatz datensatz = IOConverter.convertInputToDatensatz(tempDateiInhalt, tempDateiname);
 
                 Auswertung auswertung = new Auswertung(datensatz);
-                datensatz = auswertung.werteAus(); // TODO nicht return
+                auswertung.werteAus();
 
-                verarbeiteteDatensaetze.add(datensatz);
-                // System.out.println("Verarbeiter beendet Verarbeitung von " + tempDateiname);
+                verarbeiteteDatensaetze.add(auswertung.getDatensatz());
             }
         }
 

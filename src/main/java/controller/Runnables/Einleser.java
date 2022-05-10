@@ -23,7 +23,7 @@ public class Einleser implements Runnable {
     }
 
     /**
-     * Methode, die das Einlesen vornimmt:
+     * Methode, die das Einlesen vornimmt:<br>
      * Solange noch zu lesende Dateien im Ordner existieren, lies diese ein, speichere sie für 0.05 Sekunden und fahre fort
      * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
      */
@@ -38,11 +38,10 @@ public class Einleser implements Runnable {
                 }
                 DateiReader reader = new DateiReader(eingabedateiname);
 
-                // System.out.println("Einleser liest " + eingabedateiname);
                 String inhalt;
                 try {
                     inhalt = reader.lies();
-                } catch (IOException e) { // wandle IOException in AlgorithmusException um
+                } catch (IOException e) {
                     throw new AlgorithmusException(e.getMessage());
                 }
                 synchronized (aktuellGelesenerInhalt) {

@@ -7,7 +7,7 @@ import java.io.IOException;
 
 
 /**
- * Klasse zum Lesen des Eingabeinhalts aus einer Textdatei
+ * Klasse zum Lesen des kompletten Eingabeinhalts aus einer Textdatei
  */
 public class DateiReader implements IReader {
 
