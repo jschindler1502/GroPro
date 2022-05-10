@@ -27,50 +27,42 @@ public class SignalauswertungsProgramm {
      */
     public SignalauswertungsProgramm(String eingabeordner) throws IOException {
         this.eingabeordner = eingabeordner;
-        /*File folder = new File(eingabeordner);
+        File folder = new File(eingabeordner);
         File[] listOfFiles = folder.listFiles();
-        if(listOfFiles == null || listOfFiles.length == 0){
+        if (listOfFiles == null || listOfFiles.length == 0) {
             throw new IOException("Technischer Fehler: es wurden keine Eingabedateien im Ordner /testfaelle/input hinterlegt.");
         }
-        for (File listOfFile : listOfFiles) {
-            if (listOfFile.isFile()) {
-                offeneDateien.add(listOfFile.getName());
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                offeneDateien.add(file.getPath());
             }
-        }*/
+        }
 
-//        Thread einleseThread = new Thread();
-//        Thread konvertiereThread = new Thread();
-//        Thread verarbeiteThread = new Thread();
-//        Thread ausleseThread = new Thread();
+
     }
 
     /**
      * Methode zum Starten des Programms mit allen Nebenlaeufigkeiten
      */
     public void starteProgramm() throws IOException {
-
-
-        String eingabedatei_TEST = eingabeordner;
-        String ausgabedateiname = eingabedatei_TEST.replace("input", "output");
-
-        int indexEnde = eingabedatei_TEST.lastIndexOf('.');
-        if (indexEnde == -1) {
-            indexEnde = eingabedatei_TEST.length();
-        }
-
-        ausgabedateiname = ausgabedateiname.substring(0, indexEnde) + "out" + ausgabedateiname.substring(indexEnde);
-
+        //        Thread einleseThread = new Thread();
+        //        Thread konvertiereThread = new Thread();
+        //        Thread verarbeiteThread = new Thread();
+        //        Thread ausleseThread = new Thread();
 
         // zu Testzwecken:
-        laufeProgrammMitEinemDatensatz(eingabeordner);
-    }
-
-    private void leseEin(){
         for (String eingabedateiname :
                 offeneDateien) {
-
+            laufeProgrammMitEinemDatensatz(eingabedateiname);
         }
     }
+
+//    private void leseEin() {
+//        for (String eingabedateiname :
+//                offeneDateien) {
+//
+//        }
+//    }
 
     /**
      * nur zu Testzwecken

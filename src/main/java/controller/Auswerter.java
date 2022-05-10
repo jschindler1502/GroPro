@@ -12,23 +12,24 @@ public class Auswerter {
 
     public void werteDatensatzAus() {
         normiereUndRechneUm();
-        // System.out.println("normiert und umgerechnet, x_hut ="+ messwertList.get(0).getX_hut()+   "y normiert ="+messwertList.get(0).getY());
+        //System.out.println("normiert und umgerechnet, x_hut =" + datensatz.getMesswertList()[32742].getX_hut() + "y normiert =" + datensatz.getMesswertList()[32742].getY());
 
         glaette();
-        // System.out.println("geglaettet, x ="+ messwertList.get(0).getX());
+        // System.out.println("geglaettet, x ="+ datensatz.getMesswertList()[32742].getX());
 
         berechneObereEinhuellende();
-        // System.out.println("berechnet ObereEinhuellende, y_obere ="+ messwertList.get(0).getY_einhuellende());
+        // System.out.println("berechnet ObereEinhuellende, y_obere ="+ datensatz.getMesswertList()[32742].getY_einhuellende());
 
 
         berechneFWHM();
     }
 
     private void normiereUndRechneUm() {
+        double yMax = datensatz.getMax().getY();
         for (Messwert mw :
                 datensatz.getMesswertList()) {
-            mw.setX_hut((((double) mw.getX_schlange()) / (Math.pow(2, 18) - 1.)) * 266.3 - 132.3);
-            mw.setY(mw.getY() / datensatz.getMax().getY());
+            mw.setX_hut((((double) mw.getX_schlange()) / (Math.pow(2., 18) - 1.)) * 266.3 - 132.3);
+            mw.setY(mw.getY() / yMax);
         }
     }
 
@@ -45,18 +46,17 @@ public class Auswerter {
                 }
                 mw.setX(1. / (obergrenze) * sum);
             } else if (k > (datensatz.getN() - 1 - tau)) {
-                int untergrenze=Math.abs(k - tau);
+                int untergrenze = Math.abs(k - tau);
                 for (int i = untergrenze; i < datensatz.getN(); i++) {
                     sum += datensatz.getMesswertList()[i].getX_hut();
                 }
-                mw.setX(1. / (datensatz.getN()-untergrenze) * sum);
+                mw.setX(1. / (datensatz.getN() - untergrenze) * sum);
             } else {
                 for (int i = 0; i < n; i++) {
                     sum += datensatz.getMesswertList()[k - tau + i].getX_hut();
                 }
                 mw.setX((1. / n) * sum);
             }
-
         }
     }
 
@@ -67,58 +67,44 @@ public class Auswerter {
         // von links bis y_maxInd
         for (int k = 0; k < y_maxInd; k++) {
             Messwert mw = datensatz.getMesswertList()[k];
-            if (mw.getY() <= y_maxTemp) {
-                mw.setY_einhuellende(y_maxTemp);
-            } else {
+            if (mw.getY() > y_maxTemp) {
                 y_maxTemp = mw.getY();
-                mw.setY_einhuellende(mw.getY());
             }
+            mw.setY_einhuellende(y_maxTemp);
         }
 
         // von rechts bis y_maxInd
         y_maxTemp = datensatz.getMesswertList()[datensatz.getN() - 1].getY();
         for (int k = datensatz.getN() - 1; k >= y_maxInd; k--) {
             Messwert mw = datensatz.getMesswertList()[k];
-            if (mw.getY() <= y_maxTemp) {
-                mw.setY_einhuellende(y_maxTemp);
-            } else {
+            if (mw.getY() > y_maxTemp) {
                 y_maxTemp = mw.getY();
-                mw.setY_einhuellende(mw.getY());
             }
+            mw.setY_einhuellende(y_maxTemp);
         }
     }
 
     private void berechneFWHM() {
-        double y_max = datensatz.getMax().getY(); // todo nur index speichern, sollte 1 sein
+        double y_max = datensatz.getMax().getY(); // ist immer 1
         int y_maxInd = datensatz.getIndexOf(datensatz.getMax());
         double y_grundlinie = getGrundlinie();
-        double y_halbeDiff = (y_max - y_grundlinie) / 2.;
+        double y_halbeHoehe = (y_max + y_grundlinie) / 2.;
 
         // von y_maxInd bis R
-        for (int k = y_maxInd + 1; k < datensatz.getN(); k++) {
-            Messwert mw = datensatz.getMesswertList()[k];
-            if (mw.getY_einhuellende() <= y_halbeDiff) {
-                datensatz.setR(mw);
-            }
+        int k;
+        for (k = y_maxInd + 1; datensatz.getMesswertList()[k].getY_einhuellende() >= y_halbeHoehe; k++) {
         }
-
-        if (datensatz.getR() == null) {// TODO
-            System.out.println("Leider kein R gefunden");
-            datensatz.setR(datensatz.getMesswertList()[datensatz.getN() - 1]);
-        }
+        int indR = k;
 
         // von y_maxInd bis L
-        for (int k = y_maxInd - 1; k >= 0; k--) {
-            Messwert mw = datensatz.getMesswertList()[k];
-            if (mw.getY_einhuellende() <= y_halbeDiff) {
-                datensatz.setL(mw);
-            }
+        for (k = y_maxInd - 1; datensatz.getMesswertList()[k].getY_einhuellende() >= y_halbeHoehe; k--) {
         }
-        if (datensatz.getL() == null) { // TODO
-            System.out.println("Leider kein L gefunden");
-            datensatz.setL(datensatz.getMesswertList()[0]);
-        }
-        datensatz.setFWHM((float) (datensatz.getR().getX() - datensatz.getL().getX()));
+        int indL = k;
+
+
+        datensatz.setIndR(indR);
+        datensatz.setIndL(indL);
+        datensatz.setFWHM(Math.abs(datensatz.getMesswertList()[indR].getY_einhuellende() - datensatz.getMesswertList()[indL].getY_einhuellende()));
     }
 
 
@@ -133,7 +119,9 @@ public class Auswerter {
 
     private double getGrundlinie() {
         int n_grundInt = (int) (0.01 * datensatz.getN());
-        // TODO setzte min = 1
+        if (n_grundInt == 0) {
+            n_grundInt = 1;
+        }
         double sum = 0;
         for (int k = 0; k < n_grundInt; k++) {
             sum += datensatz.getMesswertList()[k].getY_einhuellende(); // Annahme dass einhuellende y-Werte gemeint

@@ -6,8 +6,8 @@ public class Datensatz {
     final private int N;
 
     private Messwert max;
-    private Messwert L;
-    private Messwert R;
+    private int indL;
+    private int indR;
     private double FWHM;
 
 
@@ -15,33 +15,27 @@ public class Datensatz {
         this.name = name;
         this.messwertList = messwerte;
         this.N = messwertList.length;
-        this.setMax(findMax());
+        this.max = findMax();
     }
 
     public Messwert[] getMesswertList() {
         return messwertList;
     }
 
-    public Messwert getL() {
-        return L;
-    }
-
-    public Messwert getR() {
-        return R;
-    }
-
     public double getFWHM() {
         return FWHM;
     }
 
-    public int getIndexOf(Messwert mw) {
+    public int getIndexOf(Messwert mw) { // TODO performanz
         for (int k = 0; k < N; k++) {
-            if(mw.equals(messwertList[k])){
+            if (mw.equals(messwertList[k])) {
                 return k;
             }
         }
+        System.out.println("nicht gefunden");
         return -1;
     }
+
     private Messwert findMax() {
         Messwert max = messwertList[0];
         for (Messwert mw :
@@ -53,16 +47,13 @@ public class Datensatz {
         return max;
     }
 
-    public void setMax(Messwert max) {
-        this.max = max;
+
+    public void setIndL(int l) {
+        indL = l;
     }
 
-    public void setL(Messwert l) {
-        L = l;
-    }
-
-    public void setR(Messwert r) {
-        R = r;
+    public void setIndR(int r) {
+        indR = r;
     }
 
     public void setFWHM(double FWHM) {
@@ -79,5 +70,13 @@ public class Datensatz {
 
     public Messwert getMax() {
         return max;
+    }
+
+    public int getIndL() {
+        return indL;
+    }
+
+    public int getIndR() {
+        return indR;
     }
 }

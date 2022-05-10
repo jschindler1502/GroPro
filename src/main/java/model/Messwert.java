@@ -3,7 +3,7 @@ package model;
 import java.util.Objects;
 
 public class Messwert {
-    private int x_schlange;
+    private final int x_schlange;
     private double x_hut;
     private double x;
     private double y; // wird normiert
