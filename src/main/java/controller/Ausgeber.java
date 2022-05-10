@@ -5,6 +5,7 @@ import io.IWriter;
 import model.Datensatz;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,8 +26,10 @@ public class Ausgeber implements Runnable {
     @Override
     public void run() {
         while (geschlosseneDateien.size() != anzDateien) {
+            List<Datensatz> verarbeiteteTemp = new ArrayList<>(verarbeiteteDatensaetze);
             for (Datensatz datensatz :
-                    verarbeiteteDatensaetze) {
+                    verarbeiteteTemp) {
+                System.out.println("Ausgeber startet Verarbeitung von "+datensatz.getName());
                 verarbeiteteDatensaetze.remove(datensatz);
 
                 String ausgabetext = OConverter.convertDatensatzToOutput(datensatz);
@@ -39,6 +42,7 @@ public class Ausgeber implements Runnable {
                 }
 
                 geschlosseneDateien.add(datensatz.getName());
+                System.out.println("Ausgeber beendet Verarbeitung von "+datensatz.getName());
             }
         }
     }

@@ -19,8 +19,8 @@ public class SignalauswertungsProgramm {
     private List<Datensatz> verarbeiteteDatensaetze;
     private List<String> geschlosseneDateien ; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
-    private volatile String aktuellGeleseneDatei;
-    private volatile String aktuellGelesenerInhalt;
+    private volatile SharedString aktuellGeleseneDatei = new SharedString();
+    private volatile SharedString aktuellGelesenerInhalt = new SharedString();
 
 
     /**
@@ -80,7 +80,7 @@ public class SignalauswertungsProgramm {
             ausgeberThread.join();
             // if(geschlosseneDateien.length == M) threads.join()
         } catch (ValidierungsException | AlgorithmusException e) { // in diesem Fall in Konsole und Datei schreiben
-            IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei);
+            IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei.getS());
             IWriter konsolenWriter = new KonsoleWriter();
             dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird EingabeAusgabeException geworfen, in Main gefangen
             konsolenWriter.schreibeAusgabe(e.getMessage());

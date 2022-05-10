@@ -3,14 +3,15 @@ package controller;
 import io.DateiReader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Einleser implements Runnable {
     private List<String> offeneDateien;
-    private String aktuellGeleseneDatei;
-    private String aktuellGelesenerInhalt;
+    private SharedString aktuellGeleseneDatei;
+    private SharedString aktuellGelesenerInhalt;
 
-    public Einleser(List<String> offeneDateien, String aktuellGeleseneDatei, String aktuellGelesenerInhalt) {
+    public Einleser(List<String> offeneDateien, SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt) {
         this.offeneDateien = offeneDateien;
         this.aktuellGeleseneDatei = aktuellGeleseneDatei;
         this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
@@ -18,16 +19,19 @@ public class Einleser implements Runnable {
 
     @Override
     public void run() {
-        while (offeneDateien.size() != 0) {
-            for (String eingabedateiname : offeneDateien) {
-                synchronized (this){
-                    this.aktuellGeleseneDatei = eingabedateiname;
+        List<String> offenTemp = new ArrayList<>(offeneDateien);
+
+        while (offenTemp.size() != 0) {
+            for (String eingabedateiname : offenTemp) {
+                synchronized (aktuellGeleseneDatei){
+                    aktuellGeleseneDatei.setS(eingabedateiname);
                 }
                 DateiReader reader = new DateiReader(eingabedateiname);
                 try {
+                    System.out.println("Einleser liest "+eingabedateiname);
                     String inhalt = reader.lies();
-                    synchronized (this){
-                        this.aktuellGelesenerInhalt = inhalt;
+                    synchronized (aktuellGelesenerInhalt){
+                        aktuellGelesenerInhalt.setS(inhalt);
                     }
                     synchronized (this){
                         wait(50);
@@ -36,7 +40,10 @@ public class Einleser implements Runnable {
                     e.printStackTrace(); // TODO exception handl
                 }
             }
+            offenTemp = new ArrayList<>(offeneDateien);
         }
-        aktuellGeleseneDatei = null;
+        synchronized (aktuellGeleseneDatei){
+            aktuellGeleseneDatei.setS(null);
+        }
     }
 }
