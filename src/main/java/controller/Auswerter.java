@@ -104,7 +104,7 @@ public class Auswerter {
 
         datensatz.setIndR(indR);
         datensatz.setIndL(indL);
-        datensatz.setFWHM(Math.abs(datensatz.getMesswertList()[indR].getY_einhuellende() - datensatz.getMesswertList()[indL].getY_einhuellende()));
+        datensatz.setFWHM(Math.abs(datensatz.getMesswertList()[indR].getX() - datensatz.getMesswertList()[indL].getX()));
     }
 
 
