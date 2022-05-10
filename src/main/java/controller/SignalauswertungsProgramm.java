@@ -48,8 +48,8 @@ public class SignalauswertungsProgramm {
         Einleser einleser = new Einleser(offeneDateien,aktuellGeleseneDatei,aktuellGelesenerInhalt);
         Thread einleseThread = new Thread(einleser);
 
-        Auswerter auswerter = new Auswerter(aktuellGeleseneDatei,aktuellGelesenerInhalt,offeneDateien,verarbeiteteDatensaetze);
-        Thread auswerterThread = new Thread(auswerter);
+        Verarbeiter verarbeiter = new Verarbeiter(aktuellGeleseneDatei,aktuellGelesenerInhalt,offeneDateien,verarbeiteteDatensaetze);
+        Thread verarbeiterThread = new Thread(verarbeiter);
 
         Ausgeber ausgeber = new Ausgeber(verarbeiteteDatensaetze,geschlosseneDateien,anzDateien);
         Thread ausgeberThread = new Thread(ausgeber);
@@ -61,7 +61,7 @@ public class SignalauswertungsProgramm {
             einleseThread.start();
 
             //t2 nimmt das was geradeGelesen, entfernt aus offeneDatein
-            auswerterThread.start();
+            verarbeiterThread.start();
             // schreibt in List<Datensatz> schonVerarbeitet
 
             //t3 nimmt aus schonVerarbeite, löscht da

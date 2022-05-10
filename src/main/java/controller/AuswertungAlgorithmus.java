@@ -3,50 +3,24 @@ package controller;
 import model.Datensatz;
 import model.Messwert;
 
-import java.util.ArrayList;
+public class AuswertungAlgorithmus {
+    private final Datensatz datensatz;
 
-public class Auswerter implements Runnable {
-    private String aktuellGeleseneDatei;
-    private String aktuellGelesenerInhalt;
-    private ArrayList<String> offeneDateien;
-    private ArrayList<Datensatz> verarbeiteteDatensaetze;
-    private Datensatz datensatz; // TODO dummy
-
-    public Auswerter(String aktuellGeleseneDatei, String aktuellGelesenerInhalt, ArrayList<String> offeneDateien, ArrayList<Datensatz> verarbeiteteDatensaetze) {
-        this.aktuellGeleseneDatei = aktuellGeleseneDatei;
-        this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
-        this.offeneDateien = offeneDateien;
-        this.verarbeiteteDatensaetze = verarbeiteteDatensaetze;
+    public AuswertungAlgorithmus(Datensatz datensatz) {
+        this.datensatz = datensatz;
     }
 
+    public Datensatz werteAus(){
+        normiereUndRechneUm();
 
-    public void run() {
-        // TODO iterien?
-        try {
-            this.wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
-        } catch (InterruptedException e) {
-            e.printStackTrace(); // TODO
-        }
-        while (aktuellGeleseneDatei!= null){ // wenn null, ist Einleser fertig
-            if (offeneDateien.contains(aktuellGeleseneDatei)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
+        glaette();
 
-                offeneDateien.remove(aktuellGeleseneDatei);
-                datensatz= IConverter.convertInputToDatensatz(aktuellGelesenerInhalt,aktuellGeleseneDatei); // dummy
+        berechneObereEinhuellende();
 
-                normiereUndRechneUm();
+        berechneFWHM();
 
-                glaette();
-
-                berechneObereEinhuellende();
-
-                berechneFWHM();
-                verarbeiteteDatensaetze.add(datensatz);
-
-            }
-        }
-
+        return datensatz;
     }
-
     private void normiereUndRechneUm() {
         double yMax = datensatz.getMax().getY();
         for (Messwert mw :
@@ -151,5 +125,4 @@ public class Auswerter implements Runnable {
         }
         return (1. / n_grundInt) * sum;
     }
-
 }
