@@ -19,7 +19,6 @@ public class Ausgeber implements Runnable {
         this.verarbeiteteDatensaetze = verarbeiteteDatensaetze;
         this.geschlosseneDateien = geschlosseneDateien;
         this.anzDateien = anzDateien;
-
     }
 
 

@@ -31,22 +31,21 @@ public class Verarbeiter implements Runnable {
             throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
         }
 
-        String datei, inhalt;
+        String tempDateiname, tempDateiInhalt;
 
         while (offeneDateien.size() != 0) { // wenn 0, ist Einleser fertig
 
             synchronized (aktuellGeleseneDatei) {
-                datei = aktuellGeleseneDatei.getS();
+                tempDateiname = aktuellGeleseneDatei.getS();
             }
             synchronized (aktuellGelesenerInhalt) {
-                inhalt = aktuellGelesenerInhalt.getS();
+                tempDateiInhalt = aktuellGelesenerInhalt.getS();
             }
 
-            if (datei == null || inhalt == null) {
+            if (tempDateiname == null || tempDateiInhalt == null) {
                 synchronized (this) {
                     try {
-                        wait(10); // damit Einleser wenigstens die erste Datei gelesen hat
-
+                        wait(10);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
                     }
@@ -54,17 +53,17 @@ public class Verarbeiter implements Runnable {
                 continue;
             }
 
-            if (offeneDateien.contains(datei)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
-                System.out.println("Verarbeiter startet Verarbeitung von " + datei);
-                offeneDateien.remove(datei);
+            if (offeneDateien.contains(tempDateiname)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
+                System.out.println("Verarbeiter startet Verarbeitung von " + tempDateiname);
+                offeneDateien.remove(tempDateiname);
 
-                Datensatz datensatz = IOConverter.convertInputToDatensatz(inhalt, datei);
+                Datensatz datensatz = IOConverter.convertInputToDatensatz(tempDateiInhalt, tempDateiname);
 
                 Auswertung alg = new Auswertung(datensatz);
                 datensatz = alg.werteAus(); // TODO nicht return
 
                 verarbeiteteDatensaetze.add(datensatz);
-                System.out.println("Verarbeiter beendet Verarbeitung von " + datei);
+                System.out.println("Verarbeiter beendet Verarbeitung von " + tempDateiname);
             }
         }
 
