@@ -3,14 +3,14 @@ package controller;
 import model.Datensatz;
 import model.Messwert;
 
-public class AuswertungAlgorithmus {
+public class Auswertung {
     private final Datensatz datensatz;
 
-    public AuswertungAlgorithmus(Datensatz datensatz) {
+    public Auswertung(Datensatz datensatz) {
         this.datensatz = datensatz;
     }
 
-    public Datensatz werteAus(){
+    public Datensatz werteAus() {
         normiereUndRechneUm();
 
         glaette();
@@ -21,6 +21,7 @@ public class AuswertungAlgorithmus {
 
         return datensatz;
     }
+
     private void normiereUndRechneUm() {
         double yMax = datensatz.getMax().getY();
         for (Messwert mw :
@@ -89,14 +90,14 @@ public class AuswertungAlgorithmus {
 
         // von y_maxInd bis R
         int k;
-        for (k = y_maxInd + 1; datensatz.getMesswertList()[k].getY_einhuellende() >= y_halbeHoehe; k++) {
+        for (k = y_maxInd + 1; datensatz.getMesswertList()[k].getY_einhuellende() > y_halbeHoehe; k++) {
         }
-        int indR = k;
+        int indR = k - 1;
 
         // von y_maxInd bis L
-        for (k = y_maxInd - 1; datensatz.getMesswertList()[k].getY_einhuellende() >= y_halbeHoehe; k--) {
+        for (k = y_maxInd - 1; datensatz.getMesswertList()[k].getY_einhuellende() > y_halbeHoehe; k--) {
         }
-        int indL = k;
+        int indL = k + 1;
 
 
         datensatz.setIndR(indR);

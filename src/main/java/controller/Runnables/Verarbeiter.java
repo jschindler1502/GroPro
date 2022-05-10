@@ -1,5 +1,8 @@
-package controller;
+package controller.Runnables;
 
+import controller.Auswertung;
+import controller.IOConverter;
+import model.SharedString;
 import model.Datensatz;
 
 import java.util.List;
@@ -57,7 +60,7 @@ public class Verarbeiter implements Runnable {
 
                 Datensatz datensatz = IOConverter.convertInputToDatensatz(inhalt, datei);
 
-                AuswertungAlgorithmus alg = new AuswertungAlgorithmus(datensatz);
+                Auswertung alg = new Auswertung(datensatz);
                 datensatz = alg.werteAus(); // TODO nicht return
 
                 verarbeiteteDatensaetze.add(datensatz);

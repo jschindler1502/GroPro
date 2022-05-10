@@ -1,5 +1,7 @@
-package controller;
+package controller.Runnables;
 
+import controller.Exceptions.AlgorithmusException;
+import model.SharedString;
 import io.DateiReader;
 
 import java.io.IOException;

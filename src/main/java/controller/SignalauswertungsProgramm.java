@@ -1,7 +1,11 @@
 package controller;
 
+
 import io.*;
 import model.Datensatz;
+import model.SharedString;
+
+import controller.Runnables.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,21 +17,18 @@ import java.util.List;
  * Programm zur Ausfuehrung der Signalauswertung
  */
 public class SignalauswertungsProgramm {
-    final private String eingabeordner;
+    private final List<String> offeneDateien; // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
+    private final List<Datensatz> verarbeiteteDatensaetze;
+    private final List<String> geschlosseneDateien; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
-    private List<String> offeneDateien; // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
-    private List<Datensatz> verarbeiteteDatensaetze;
-    private List<String> geschlosseneDateien; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
-
-    private volatile SharedString aktuellGeleseneDatei = new SharedString();
-    private volatile SharedString aktuellGelesenerInhalt = new SharedString();
+    private final SharedString aktuellGeleseneDatei = new SharedString();
+    private final SharedString aktuellGelesenerInhalt = new SharedString();
 
 
     /**
      * @param eingabeordner Name des Ordners inklusive Pfad, in dem sich die Eingabedateien befinden
      */
     public SignalauswertungsProgramm(String eingabeordner) throws IOException {
-        this.eingabeordner = eingabeordner;
 
         offeneDateien = Collections.synchronizedList(new ArrayList<>());
         verarbeiteteDatensaetze = Collections.synchronizedList(new ArrayList<>());
