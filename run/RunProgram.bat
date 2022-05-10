@@ -1,5 +1,5 @@
 @echo off
-SET jarDat=Programm.jar
+SET jarDat=SignalauswertungsProgramm.jar
 SET in=..\testfaelle\input\
 SET out=..\testfaelle\output\
 
@@ -8,15 +8,17 @@ IF NOT EXIST %jarDat% GOTO NOJAR
 IF NOT EXIST %in% GOTO NOINPUT
 
 DEL /q %out%
-java -jar %jarDat% "%%i"
-
+ECHO Die Dateien im Ordner %%in werden verarbeitet.
+java -jar %jarDat% %in%
+ECHO ------------------------------------------------------
+GOTO ENDE
 
 :NOJAR
 ECHO Die .jar wurde nicht gefunden!
 GOTO ENDE
 
 :NOINPUT
-ECHO Der Input-Ordner wurde nicht gefunden!
+ECHO Der Eingabeordner wurde nicht gefunden!
 GOTO ENDE
 
 :ENDE

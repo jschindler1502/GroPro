@@ -3,29 +3,33 @@ package controller;
 import model.Datensatz;
 import model.Messwert;
 
-public class Auswerter {
-    final private Datensatz datensatz;
+/**
+ * Klasse, die die Ausfuehrung der mathematischen Methoden fuer einen Datensatz uebernimmt<br>
+ * 1. Normieren und Umrechnen<br>
+ * 2. Glaetten<br>
+ * 3. Berechnung der oberen Einhuellenden<br>
+ * 4. Berechnung der Pulsbreite (FWHM)
+ */
+public class Auswertung {
+    private final Datensatz datensatz;
 
-    public Auswerter(Datensatz datensatz) {
+    public Auswertung(Datensatz datensatz) {
         this.datensatz = datensatz;
     }
 
-    public void werteDatensatzAus() {
+    /**
+     * Methode, die nacheinander Schritte 1.-4. ausfuehrt
+     */
+    public void werteAus() {
         normiereUndRechneUm();
-        //System.out.println("normiert und umgerechnet, x_hut =" + datensatz.getMesswertList()[32742].getX_hut() + "y normiert =" + datensatz.getMesswertList()[32742].getY());
-
         glaette();
-        // System.out.println("geglaettet, x ="+ datensatz.getMesswertList()[32742].getX());
-
         berechneObereEinhuellende();
-        // System.out.println("berechnet ObereEinhuellende, y_obere ="+ datensatz.getMesswertList()[32742].getY_einhuellende());
-
-
         berechneFWHM();
     }
 
+    // 1.
     private void normiereUndRechneUm() {
-        double yMax = datensatz.getMax().getY();
+        double yMax = datensatz.getMesswertList()[datensatz.getMaxIndex()].getY();
         for (Messwert mw :
                 datensatz.getMesswertList()) {
             mw.setX_hut((((double) mw.getX_schlange()) / (Math.pow(2., 18) - 1.)) * 266.3 - 132.3);
@@ -33,6 +37,7 @@ public class Auswerter {
         }
     }
 
+    // 2.
     private void glaette() {
         int n = getKleinN();
         int tau = getTau(n);
@@ -60,8 +65,9 @@ public class Auswerter {
         }
     }
 
+    // 3.
     private void berechneObereEinhuellende() {
-        int y_maxInd = datensatz.getIndexOf(datensatz.getMax());
+        int y_maxInd = datensatz.getMaxIndex();
         double y_maxTemp = datensatz.getMesswertList()[0].getY();
 
         // von links bis y_maxInd
@@ -84,30 +90,30 @@ public class Auswerter {
         }
     }
 
+    // 4.
     private void berechneFWHM() {
-        double y_max = datensatz.getMax().getY(); // ist immer 1
-        int y_maxInd = datensatz.getIndexOf(datensatz.getMax());
+        int y_maxInd = datensatz.getMaxIndex();
+        double y_max = datensatz.getMesswertList()[y_maxInd].getY(); // ist immer 1
         double y_grundlinie = getGrundlinie();
         double y_halbeHoehe = (y_max + y_grundlinie) / 2.;
 
         // von y_maxInd bis R
         int k;
-        for (k = y_maxInd + 1; datensatz.getMesswertList()[k].getY_einhuellende() >= y_halbeHoehe; k++) {
+        for (k = y_maxInd + 1; datensatz.getMesswertList()[k].getY_einhuellende() > y_halbeHoehe; k++) {
         }
-        int indR = k;
+        int indR = k - 1;
 
         // von y_maxInd bis L
-        for (k = y_maxInd - 1; datensatz.getMesswertList()[k].getY_einhuellende() >= y_halbeHoehe; k--) {
+        for (k = y_maxInd - 1; datensatz.getMesswertList()[k].getY_einhuellende() > y_halbeHoehe; k--) {
         }
-        int indL = k;
-
-
+        int indL = k + 1;
         datensatz.setIndR(indR);
         datensatz.setIndL(indL);
         datensatz.setFWHM(datensatz.getMesswertList()[indR].getX() - datensatz.getMesswertList()[indL].getX());
     }
 
 
+    /* Hilfsmethoden zur Berechnung */
     private int getKleinN() {
         int temp = (int) (0.002 * datensatz.getN());
         return temp % 2 == 0 ? temp - 1 : temp;
@@ -129,4 +135,7 @@ public class Auswerter {
         return (1. / n_grundInt) * sum;
     }
 
+    public Datensatz getDatensatz() {
+        return datensatz;
+    }
 }
