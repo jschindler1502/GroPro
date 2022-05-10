@@ -25,6 +25,7 @@ public class Einleser implements Runnable {
     /**
      * Methode, die das Einlesen vornimmt:<br>
      * Solange noch zu lesende Dateien im Ordner existieren, lies diese ein, speichere sie für 0.05 Sekunden und fahre fort
+     *
      * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
      */
     @Override
@@ -51,7 +52,7 @@ public class Einleser implements Runnable {
                     try {
                         wait(50);
                     } catch (InterruptedException e) {
-                        throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
+                        throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus beim Verarbeiten der Datei " + aktuellGeleseneDatei);
                     }
                 }
 

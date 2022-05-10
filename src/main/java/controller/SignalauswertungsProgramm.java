@@ -1,6 +1,8 @@
 package controller;
 
 
+import controller.Exceptions.AlgorithmusException;
+import controller.Exceptions.ValidierungsException;
 import io.*;
 import model.Datensatz;
 import model.SharedString;
@@ -100,13 +102,17 @@ public class SignalauswertungsProgramm {
      * @param e die gefangene Exception: {@link IOException}, {@link controller.Exceptions.AlgorithmusException} oder {@link controller.Exceptions.ValidierungsException}
      */
     private void handleException(Throwable e) {
+        String message = "Unerwarteter Fehler im Algorithmus";
+        if (e instanceof ValidierungsException || e instanceof AlgorithmusException) {
+            message = e.getMessage();
+        }
+        IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei.getS());
+        IWriter konsolenWriter = new KonsoleWriter();
         try {
-            IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei.getS());
-            IWriter konsolenWriter = new KonsoleWriter();
-            dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird IOException geworfen, in Main gefangen
-            konsolenWriter.schreibeAusgabe(e.getMessage());
+            dateiWriter.schreibeAusgabe(message);
+            konsolenWriter.schreibeAusgabe(message);
         } catch (IOException ex) {
-            System.err.println(e.getMessage());
+            System.err.println(message);
         }
         System.exit(0);
     }

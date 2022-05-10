@@ -31,7 +31,7 @@ public class IOConverter {
 
 
         if (gesamtInhalt.length() == 0) {
-            throw new ValidierungsException("Syntaxfehler: Dokument darf nicht leer sein. ");
+            throw new ValidierungsException("Syntaxfehler in der Datei "+eingabedateiname+": Dokument darf nicht leer sein. ");
         }
 
         String[] aufgeteilterInhalt = gesamtInhalt.split("[\\r\\n]+");
@@ -43,11 +43,10 @@ public class IOConverter {
             if (!zeile.startsWith("#")) {
                 String[] aufgeteilteZeile = zeile.split("[\\r\\n\\t]+");
                 if (aufgeteilteZeile.length != 2) {
-                    System.out.println(Arrays.toString(aufgeteilteZeile));
-                    throw new ValidierungsException("Semantikfehler: in einer Zeile muessen genau 2 natuerliche Zahlen stehen: y und x_schlange.");
+                    throw new ValidierungsException("Semantikfehler in der Datei "+eingabedateiname+": in einer Zeile muessen genau 2 natuerliche Zahlen stehen: y und x_schlange.");
                 }
-                if (!(istNatuerlicheZahl(aufgeteilteZeile[0]) || istNatuerlicheZahl(aufgeteilteZeile[1]))) {
-                    throw new ValidierungsException("Semantikfehler: y und x_schlange muessen als natuerliche Zahlen angegeben werden.");
+                if (!(istNatuerlicheZahl(aufgeteilteZeile[0]) && istNatuerlicheZahl(aufgeteilteZeile[1]))) {
+                    throw new ValidierungsException("Semantikfehler in der Datei "+eingabedateiname+": y und x_schlange muessen als natuerliche Zahlen angegeben werden.");
                 }
                 int y = Integer.parseInt(aufgeteilteZeile[0]);
                 int x_schlange = Integer.parseInt(aufgeteilteZeile[1]);
@@ -56,7 +55,7 @@ public class IOConverter {
         }
 
         if (messwerte.size() == 0) {
-            throw new ValidierungsException("Syntaxfehler: es wurden keine Messwerte eingegeben.");
+            throw new ValidierungsException("Syntaxfehler in der Datei "+eingabedateiname+": es wurden keine Messwerte eingegeben.");
         }
 
         Messwert[] mwArr = new Messwert[messwerte.size()];

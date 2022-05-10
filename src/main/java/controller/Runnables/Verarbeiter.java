@@ -29,6 +29,7 @@ public class Verarbeiter implements Runnable {
      * Methode, die das Verarbeiten vornimmt:<br>
      * Solange noch zu lesende Dateien im Ordner existieren oder der Einleser einen Inhalt zur Verfuegung stellt,<br>
      * konvertiere diesen und werte ihn aus
+     *
      * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
      */
     @Override
@@ -39,7 +40,7 @@ public class Verarbeiter implements Runnable {
                 wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
             }
         } catch (InterruptedException e) {
-            throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
+            throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus beim Verarbeiten der Datei " + aktuellGeleseneDatei);
         }
 
         String tempDateiname, tempDateiInhalt;
@@ -58,7 +59,7 @@ public class Verarbeiter implements Runnable {
                     try {
                         wait(10);
                     } catch (InterruptedException e) {
-                        throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
+                        throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus beim Verarbeiten der Datei " + aktuellGeleseneDatei);
                     }
                 }
                 continue;

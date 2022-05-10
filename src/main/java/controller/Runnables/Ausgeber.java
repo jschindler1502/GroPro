@@ -27,6 +27,7 @@ public class Ausgeber implements Runnable {
     /**
      * Methode, die das Ausgeben vornimmt:<br>
      * Solange noch nicht alle Dateien ausgegeben wurden, hole die verarbeiteten Datensaetze, konvertiere sie und gib sie aus<br>
+     *
      * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
      */
     @Override
@@ -43,7 +44,7 @@ public class Ausgeber implements Runnable {
                 try {
                     dateiWriter.schreibeAusgabe(ausgabetext);
                 } catch (IOException e) {
-                    throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
+                    throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus beim Verarbeiten der Datei " + datensatz.getName());
                 }
 
                 geschlosseneDateien.add(datensatz.getName());
