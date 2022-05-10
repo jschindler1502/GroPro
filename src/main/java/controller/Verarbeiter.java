@@ -1,18 +1,16 @@
 package controller;
 
 import model.Datensatz;
-import model.Messwert;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class Verarbeiter implements Runnable {
     private String aktuellGeleseneDatei;
     private String aktuellGelesenerInhalt;
-    private ArrayList<String> offeneDateien;
-    private ArrayList<Datensatz> verarbeiteteDatensaetze;
+    private List<String> offeneDateien;
+    private List<Datensatz> verarbeiteteDatensaetze;
     private Datensatz datensatz; // TODO dummy
 
-    public Verarbeiter(String aktuellGeleseneDatei, String aktuellGelesenerInhalt, ArrayList<String> offeneDateien, ArrayList<Datensatz> verarbeiteteDatensaetze) {
+    public Verarbeiter(String aktuellGeleseneDatei, String aktuellGelesenerInhalt, List<String> offeneDateien, List<Datensatz> verarbeiteteDatensaetze) {
         this.aktuellGeleseneDatei = aktuellGeleseneDatei;
         this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
         this.offeneDateien = offeneDateien;
@@ -21,23 +19,34 @@ public class Verarbeiter implements Runnable {
 
 
     public void run() {
-        // TODO iterien?
         try {
-            this.wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
-        } catch (InterruptedException e) {
-            e.printStackTrace(); // TODO
-        }
-        while (aktuellGeleseneDatei!= null){ // wenn null, ist Einleser fertig
-            if (offeneDateien.contains(aktuellGeleseneDatei)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
+            synchronized (this){
 
-                offeneDateien.remove(aktuellGeleseneDatei);
-                datensatz= IConverter.convertInputToDatensatz(aktuellGelesenerInhalt,aktuellGeleseneDatei); // dummy
+                wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace(); // TODO handling
+        }
+
+        String datei;
+        synchronized (this){
+            datei = aktuellGeleseneDatei;
+        }
+
+        while (datei!= null){ // wenn null, ist Einleser fertig
+            if (offeneDateien.contains(datei)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
+
+                offeneDateien.remove(datei);
+                datensatz= IConverter.convertInputToDatensatz(aktuellGelesenerInhalt,datei); // dummy
 
                 AuswertungAlgorithmus alg = new AuswertungAlgorithmus(datensatz);
                 datensatz=alg.werteAus(); // TODO nicht return
 
                 verarbeiteteDatensaetze.add(datensatz);
 
+            }
+            synchronized (this){
+                datei = aktuellGeleseneDatei;
             }
         }
 

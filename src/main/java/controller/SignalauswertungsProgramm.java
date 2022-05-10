@@ -6,20 +6,21 @@ import model.Datensatz;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Programm zur Ausfuehrung der Signalauswertung
  */
 public class SignalauswertungsProgramm {
     final private String eingabeordner;
-    private volatile ArrayList<String> offeneDateien = new ArrayList<>(); // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
-    private volatile ArrayList<Datensatz> konvertierteDatensaetze = new ArrayList<>();
-    private volatile ArrayList<Datensatz> verarbeiteteDatensaetze = new ArrayList<>();
-    private volatile ArrayList<String> geschlosseneDateien = new ArrayList<>(); // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
+    private List<String> offeneDateien ; // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
+    private List<Datensatz> verarbeiteteDatensaetze;
+    private List<String> geschlosseneDateien ; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
-    private String aktuellGeleseneDatei;
-    private String aktuellGelesenerInhalt;
+    private volatile String aktuellGeleseneDatei;
+    private volatile String aktuellGelesenerInhalt;
 
 
     /**
@@ -27,6 +28,10 @@ public class SignalauswertungsProgramm {
      */
     public SignalauswertungsProgramm(String eingabeordner) throws IOException {
         this.eingabeordner = eingabeordner;
+
+        offeneDateien = Collections.synchronizedList(new ArrayList<>());
+        verarbeiteteDatensaetze = Collections.synchronizedList(new ArrayList<>());
+        geschlosseneDateien = Collections.synchronizedList(new ArrayList<>());
 
         File folder = new File(eingabeordner);
         File[] listOfFiles = folder.listFiles();
@@ -38,6 +43,7 @@ public class SignalauswertungsProgramm {
                 offeneDateien.add(file.getPath());
             }
         }
+
     }
 
     /**
@@ -45,6 +51,7 @@ public class SignalauswertungsProgramm {
      */
     public void starteProgramm() throws IOException {
         int anzDateien = offeneDateien.size();
+
         Einleser einleser = new Einleser(offeneDateien,aktuellGeleseneDatei,aktuellGelesenerInhalt);
         Thread einleseThread = new Thread(einleser);
 
@@ -68,13 +75,17 @@ public class SignalauswertungsProgramm {
             ausgeberThread.start();
             // fügt List<String> geschlosseneDateienNamen zu
 
-
+            einleseThread.join();
+            verarbeiterThread.join();
+            ausgeberThread.join();
             // if(geschlosseneDateien.length == M) threads.join()
         } catch (ValidierungsException | AlgorithmusException e) { // in diesem Fall in Konsole und Datei schreiben
             IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei);
             IWriter konsolenWriter = new KonsoleWriter();
             dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird EingabeAusgabeException geworfen, in Main gefangen
             konsolenWriter.schreibeAusgabe(e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

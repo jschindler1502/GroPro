@@ -3,29 +3,35 @@ package controller;
 import io.DateiReader;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Einleser implements Runnable {
-    private ArrayList<String> offeneDateien;
+    private List<String> offeneDateien;
     private String aktuellGeleseneDatei;
     private String aktuellGelesenerInhalt;
 
-    public Einleser(ArrayList<String> offeneDateien, String aktuellGeleseneDatei, String aktuellGelesenerInhalt) {
+    public Einleser(List<String> offeneDateien, String aktuellGeleseneDatei, String aktuellGelesenerInhalt) {
         this.offeneDateien = offeneDateien;
         this.aktuellGeleseneDatei = aktuellGeleseneDatei;
         this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
-
     }
 
     @Override
     public void run() {
         while (offeneDateien.size() != 0) {
             for (String eingabedateiname : offeneDateien) {
-                this.aktuellGeleseneDatei = eingabedateiname;
+                synchronized (this){
+                    this.aktuellGeleseneDatei = eingabedateiname;
+                }
                 DateiReader reader = new DateiReader(eingabedateiname);
                 try {
-                    this.aktuellGelesenerInhalt = reader.lies();
-                    this.wait(50);
+                    String inhalt = reader.lies();
+                    synchronized (this){
+                        this.aktuellGelesenerInhalt = inhalt;
+                    }
+                    synchronized (this){
+                        wait(50);
+                    }
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace(); // TODO exception handl
                 }
