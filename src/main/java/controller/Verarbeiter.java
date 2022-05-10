@@ -25,7 +25,7 @@ public class Verarbeiter implements Runnable {
                 wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
             }
         } catch (InterruptedException e) {
-            e.printStackTrace(); // TODO handling
+            throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
         }
 
         String datei, inhalt;
@@ -45,7 +45,7 @@ public class Verarbeiter implements Runnable {
                         wait(10); // damit Einleser wenigstens die erste Datei gelesen hat
 
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
                     }
                 }
                 continue;

@@ -37,7 +37,7 @@ public class Ausgeber implements Runnable {
                 try {
                     dateiWriter.schreibeAusgabe(ausgabetext);
                 } catch (IOException e) {
-                    e.printStackTrace();// TODO handling
+                    throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
                 }
 
                 geschlosseneDateien.add(datensatz.getName());

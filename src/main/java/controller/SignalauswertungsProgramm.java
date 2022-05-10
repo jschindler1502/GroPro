@@ -15,9 +15,9 @@ import java.util.List;
 public class SignalauswertungsProgramm {
     final private String eingabeordner;
 
-    private List<String> offeneDateien ; // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
+    private List<String> offeneDateien; // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
     private List<Datensatz> verarbeiteteDatensaetze;
-    private List<String> geschlosseneDateien ; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
+    private List<String> geschlosseneDateien; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
     private volatile SharedString aktuellGeleseneDatei = new SharedString();
     private volatile SharedString aktuellGelesenerInhalt = new SharedString();
@@ -49,43 +49,46 @@ public class SignalauswertungsProgramm {
     /**
      * Methode zum Starten des Programms mit allen Nebenlaeufigkeiten
      */
-    public void starteProgramm() throws IOException {
+    public void starteProgramm() {
         int anzDateien = offeneDateien.size();
 
-        Einleser einleser = new Einleser(offeneDateien,aktuellGeleseneDatei,aktuellGelesenerInhalt);
+        Thread.UncaughtExceptionHandler handler = (t, e) -> handleException(e);
+
+        Einleser einleser = new Einleser(offeneDateien, aktuellGeleseneDatei, aktuellGelesenerInhalt);
         Thread einleseThread = new Thread(einleser);
+        einleseThread.setUncaughtExceptionHandler(handler);
 
-        Verarbeiter verarbeiter = new Verarbeiter(aktuellGeleseneDatei,aktuellGelesenerInhalt,offeneDateien,verarbeiteteDatensaetze);
+
+        Verarbeiter verarbeiter = new Verarbeiter(aktuellGeleseneDatei, aktuellGelesenerInhalt, offeneDateien, verarbeiteteDatensaetze);
         Thread verarbeiterThread = new Thread(verarbeiter);
+        verarbeiterThread.setUncaughtExceptionHandler(handler);
 
-        Ausgeber ausgeber = new Ausgeber(verarbeiteteDatensaetze,geschlosseneDateien,anzDateien);
+        Ausgeber ausgeber = new Ausgeber(verarbeiteteDatensaetze, geschlosseneDateien, anzDateien);
         Thread ausgeberThread = new Thread(ausgeber);
+        ausgeberThread.setUncaughtExceptionHandler(handler);
+
+        einleseThread.start();
+        verarbeiterThread.start();
+        ausgeberThread.start();
+
         try {
-            // List<String> offeneDateien (noch nicht konverti)
-
-            // t1
-            // schreibt String geradeGelesenDateiname, String geradeGelesenInhalt
-            einleseThread.start();
-
-            //t2 nimmt das was geradeGelesen, entfernt aus offeneDatein
-            verarbeiterThread.start();
-            // schreibt in List<Datensatz> schonVerarbeitet
-
-            //t3 nimmt aus schonVerarbeite, löscht da
-            ausgeberThread.start();
-            // fügt List<String> geschlosseneDateienNamen zu
-
             einleseThread.join();
             verarbeiterThread.join();
             ausgeberThread.join();
-            // if(geschlosseneDateien.length == M) threads.join()
-        } catch (ValidierungsException | AlgorithmusException e) { // in diesem Fall in Konsole und Datei schreiben
+        } catch (InterruptedException e) {
+            handleException(e);
+        }
+    }
+
+    private void handleException(Throwable e) {
+        try {
             IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei.getS());
             IWriter konsolenWriter = new KonsoleWriter();
             dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird EingabeAusgabeException geworfen, in Main gefangen
             konsolenWriter.schreibeAusgabe(e.getMessage());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            System.err.println(e.getMessage());
         }
+        System.exit(0);
     }
 }

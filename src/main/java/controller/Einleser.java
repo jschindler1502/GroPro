@@ -18,7 +18,7 @@ public class Einleser implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() throws RuntimeException {
         List<String> offenTemp = new ArrayList<>(offeneDateien);
 
         while (offenTemp.size() != 0) {
@@ -27,18 +27,25 @@ public class Einleser implements Runnable {
                     aktuellGeleseneDatei.setS(eingabedateiname);
                 }
                 DateiReader reader = new DateiReader(eingabedateiname);
+
+                System.out.println("Einleser liest " + eingabedateiname);
+                String inhalt = null;
                 try {
-                    System.out.println("Einleser liest " + eingabedateiname);
-                    String inhalt = reader.lies();
-                    synchronized (aktuellGelesenerInhalt) {
-                        aktuellGelesenerInhalt.setS(inhalt);
-                    }
-                    synchronized (this) {
-                        wait(50);
-                    }
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace(); // TODO exception handl
+                    inhalt = reader.lies();
+                } catch (IOException e) { // wandle IOException in AlgorithmusException um
+                    throw new AlgorithmusException(e.getMessage());
                 }
+                synchronized (aktuellGelesenerInhalt) {
+                    aktuellGelesenerInhalt.setS(inhalt);
+                }
+                synchronized (this) {
+                    try {
+                        wait(50);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
+                    }
+                }
+
             }
             offenTemp = new ArrayList<>(offeneDateien);
         }
