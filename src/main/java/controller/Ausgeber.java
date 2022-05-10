@@ -10,10 +10,9 @@ import java.util.List;
 
 
 public class Ausgeber implements Runnable {
-    private List<Datensatz> verarbeiteteDatensaetze;
+    private final List<Datensatz> verarbeiteteDatensaetze;
     final private List<String> geschlosseneDateien;
-    private int anzDateien;
-    private Datensatz datensatz; // TODO dummy
+    private final int anzDateien;
 
     public Ausgeber(List<Datensatz> verarbeiteteDatensaetze, List<String> geschlosseneDateien, int anzDateien) {
         this.verarbeiteteDatensaetze = verarbeiteteDatensaetze;
@@ -29,10 +28,10 @@ public class Ausgeber implements Runnable {
             List<Datensatz> verarbeiteteTemp = new ArrayList<>(verarbeiteteDatensaetze);
             for (Datensatz datensatz :
                     verarbeiteteTemp) {
-                System.out.println("Ausgeber startet Verarbeitung von "+datensatz.getName());
+                System.out.println("Ausgeber startet Verarbeitung von " + datensatz.getName());
                 verarbeiteteDatensaetze.remove(datensatz);
 
-                String ausgabetext = OConverter.convertDatensatzToOutput(datensatz);
+                String ausgabetext = IOConverter.convertDatensatzToOutput(datensatz);
 
                 IWriter dateiWriter = new DateiWriter(datensatz.getName());
                 try {
@@ -42,7 +41,7 @@ public class Ausgeber implements Runnable {
                 }
 
                 geschlosseneDateien.add(datensatz.getName());
-                System.out.println("Ausgeber beendet Verarbeitung von "+datensatz.getName());
+                System.out.println("Ausgeber beendet Verarbeitung von " + datensatz.getName());
             }
         }
     }

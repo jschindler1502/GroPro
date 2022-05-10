@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Einleser implements Runnable {
-    private List<String> offeneDateien;
-    private SharedString aktuellGeleseneDatei;
-    private SharedString aktuellGelesenerInhalt;
+    private final List<String> offeneDateien;
+    private final SharedString aktuellGeleseneDatei;
+    private final SharedString aktuellGelesenerInhalt;
 
     public Einleser(List<String> offeneDateien, SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt) {
         this.offeneDateien = offeneDateien;
@@ -23,17 +23,17 @@ public class Einleser implements Runnable {
 
         while (offenTemp.size() != 0) {
             for (String eingabedateiname : offenTemp) {
-                synchronized (aktuellGeleseneDatei){
+                synchronized (aktuellGeleseneDatei) {
                     aktuellGeleseneDatei.setS(eingabedateiname);
                 }
                 DateiReader reader = new DateiReader(eingabedateiname);
                 try {
-                    System.out.println("Einleser liest "+eingabedateiname);
+                    System.out.println("Einleser liest " + eingabedateiname);
                     String inhalt = reader.lies();
-                    synchronized (aktuellGelesenerInhalt){
+                    synchronized (aktuellGelesenerInhalt) {
                         aktuellGelesenerInhalt.setS(inhalt);
                     }
-                    synchronized (this){
+                    synchronized (this) {
                         wait(50);
                     }
                 } catch (IOException | InterruptedException e) {
@@ -42,7 +42,7 @@ public class Einleser implements Runnable {
             }
             offenTemp = new ArrayList<>(offeneDateien);
         }
-        synchronized (aktuellGeleseneDatei){
+        synchronized (aktuellGeleseneDatei) {
             aktuellGeleseneDatei.setS(null);
         }
     }

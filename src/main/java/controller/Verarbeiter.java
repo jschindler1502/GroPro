@@ -1,14 +1,14 @@
 package controller;
 
 import model.Datensatz;
+
 import java.util.List;
 
 public class Verarbeiter implements Runnable {
-    private SharedString aktuellGeleseneDatei;
-    private SharedString aktuellGelesenerInhalt;
-    private List<String> offeneDateien;
-    private List<Datensatz> verarbeiteteDatensaetze;
-    private Datensatz datensatz; // TODO dummy
+    private final SharedString aktuellGeleseneDatei;
+    private final SharedString aktuellGelesenerInhalt;
+    private final List<String> offeneDateien;
+    private final List<Datensatz> verarbeiteteDatensaetze;
 
     public Verarbeiter(SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt, List<String> offeneDateien, List<Datensatz> verarbeiteteDatensaetze) {
         this.aktuellGeleseneDatei = aktuellGeleseneDatei;
@@ -21,26 +21,26 @@ public class Verarbeiter implements Runnable {
     public void run() {
 
         try {
-            synchronized (this){
+            synchronized (this) {
                 wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
             }
         } catch (InterruptedException e) {
             e.printStackTrace(); // TODO handling
         }
 
-        String datei,inhalt;
+        String datei, inhalt;
 
-        while (offeneDateien.size() != 0){ // wenn 0, ist Einleser fertig
+        while (offeneDateien.size() != 0) { // wenn 0, ist Einleser fertig
 
-            synchronized (aktuellGeleseneDatei){
+            synchronized (aktuellGeleseneDatei) {
                 datei = aktuellGeleseneDatei.getS();
             }
-            synchronized (aktuellGelesenerInhalt){
+            synchronized (aktuellGelesenerInhalt) {
                 inhalt = aktuellGelesenerInhalt.getS();
             }
 
-            if(datei == null || inhalt == null){
-                synchronized (this){
+            if (datei == null || inhalt == null) {
+                synchronized (this) {
                     try {
                         wait(10); // damit Einleser wenigstens die erste Datei gelesen hat
 
@@ -52,16 +52,16 @@ public class Verarbeiter implements Runnable {
             }
 
             if (offeneDateien.contains(datei)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
-                System.out.println("Verarbeiter startet Verarbeitung von "+datei);
+                System.out.println("Verarbeiter startet Verarbeitung von " + datei);
                 offeneDateien.remove(datei);
 
-                datensatz= IConverter.convertInputToDatensatz(inhalt,datei); // dummy
+                Datensatz datensatz = IOConverter.convertInputToDatensatz(inhalt, datei);
 
                 AuswertungAlgorithmus alg = new AuswertungAlgorithmus(datensatz);
-                datensatz=alg.werteAus(); // TODO nicht return
+                datensatz = alg.werteAus(); // TODO nicht return
 
                 verarbeiteteDatensaetze.add(datensatz);
-                System.out.println("Verarbeiter beendet Verarbeitung von "+datei);
+                System.out.println("Verarbeiter beendet Verarbeitung von " + datei);
             }
         }
 
