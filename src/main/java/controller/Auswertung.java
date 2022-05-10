@@ -1,6 +1,5 @@
 package controller;
 
-import controller.Exceptions.AlgorithmusException;
 import model.Datensatz;
 import model.Messwert;
 

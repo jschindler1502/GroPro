@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// unvorhergesehener Fehler TODO Fehlermeldung
-
-
 /**
  * Programm zur Ausfuehrung der Signalauswertung, dass drei Nebenlaeufigkeiten ({@link controller.Runnables}) erstellt<br>
  * 1. Thread fuer das Einlesen der Eingabedateien, bis alle verarbeitet wurden<br>
