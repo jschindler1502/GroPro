@@ -9,16 +9,19 @@ import java.util.Arrays;
 
 public class IOConverter {
 
+    /**
+     * privater Konstruktor, damit es eine statische Klasse wird
+     */
     private IOConverter() {
 
     }
 
     /**
-     * statische Methode zur Konvertierung von EIngabeinhalt zu TODO Data Object
+     * statische Methode zur Konvertierung von Eingabeinhalt zu {@link Datensatz}
      *
-     * @param gesamtInhalt die Zeichenkette, die aus dem EIngabemedium eingelesen wurde
-     * @return das TODO Data Object, was aus dem Eingabeinhalt erstellt wird
-     * @throws ValidierungsException im Falle von Syntax oder Sematikfehlern
+     * @param gesamtInhalt die Zeichenkette, die aus dem Eingabemedium eingelesen wurde
+     * @return das {@link Datensatz}, der aus dem Eingabeinhalt erstellt wird
+     * @throws ValidierungsException im Falle von Syntax- oder Sematikfehlern
      */
     public static Datensatz convertInputToDatensatz(String gesamtInhalt, String eingabedateiname) throws ValidierungsException {
         ArrayList<Messwert> messwerte = new ArrayList<>();
@@ -35,25 +38,25 @@ public class IOConverter {
 
             // Ueberspringe Kommentarzeilen
             if (!zeile.startsWith("#")) {
-                String[] aufgeteilteZeile = zeile.split("[\\r\\n\\t]+"); // TODO ist das richtig
-                if(aufgeteilteZeile.length != 2){
+                String[] aufgeteilteZeile = zeile.split("[\\r\\n\\t]+");
+                if (aufgeteilteZeile.length != 2) {
                     System.out.println(Arrays.toString(aufgeteilteZeile));
                     throw new ValidierungsException("Semantikfehler: in einer Zeile muessen genau 2 natuerliche Zahlen stehen: y und x_schlange.");
                 }
-                if(!(istNatuerlicheZahl(aufgeteilteZeile[0]) || istNatuerlicheZahl(aufgeteilteZeile[1]))){
+                if (!(istNatuerlicheZahl(aufgeteilteZeile[0]) || istNatuerlicheZahl(aufgeteilteZeile[1]))) {
                     throw new ValidierungsException("Semantikfehler: y und x_schlange muessen als natuerliche Zahlen angegeben werden.");
                 }
                 int y = Integer.parseInt(aufgeteilteZeile[0]);
                 int x_schlange = Integer.parseInt(aufgeteilteZeile[1]);
-                messwerte.add(new Messwert(x_schlange,y));
+                messwerte.add(new Messwert(x_schlange, y));
             }
         }
 
-        if(messwerte.size() == 0){
+        if (messwerte.size() == 0) {
             throw new ValidierungsException("Syntaxfehler: es wurden keine Messwerte eingegeben.");
         }
 
-        Messwert[] mwArr= new Messwert[messwerte.size()];
+        Messwert[] mwArr = new Messwert[messwerte.size()];
         mwArr = messwerte.toArray(mwArr);
         return new Datensatz(eingabedateiname, mwArr);
     }
@@ -72,11 +75,10 @@ public class IOConverter {
             return false;
         }
         try {
-            double doubleWert= Double.parseDouble(wert);
-            if (doubleWert % 1 != 0){
+            double doubleWert = Double.parseDouble(wert);
+            if (doubleWert % 1 != 0) {
                 throw new NumberFormatException();
             }
-
             int intWert = Integer.parseInt(wert);
             if (intWert <= 0) {
                 throw new NumberFormatException();
@@ -88,9 +90,9 @@ public class IOConverter {
     }
 
     /**
-     * Erstellt Ausgabe je nach gewuenschtem Ausgabetyp
+     * Methode die Ausgabezeichenkette aus {@link Datensatz} erstellt
      *
-     * @param datensatz der um die Auswertung ergaenzte Datensatz
+     * @param datensatz der um die Auswertung ergaenzte {@link Datensatz}
      */
     public static String convertDatensatzToOutput(Datensatz datensatz) {
         StringBuilder sb = new StringBuilder();

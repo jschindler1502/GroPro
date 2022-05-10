@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Klasse zum nacheinander Einlesen beliebig vieler Eingabedateien im angegebenen Ordner in einem Thread
+ */
 public class Einleser implements Runnable {
     private final List<String> offeneDateien;
     private final SharedString aktuellGeleseneDatei;
@@ -19,6 +22,11 @@ public class Einleser implements Runnable {
         this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
     }
 
+    /**
+     * Methode, die das Einlesen vornimmt:
+     * Solange noch zu lesende Dateien im Ordner existieren, lies diese ein, speichere sie für 0.05 Sekunden und fahre fort
+     * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
+     */
     @Override
     public void run() throws RuntimeException {
         List<String> offenTemp = new ArrayList<>(offeneDateien);
@@ -30,8 +38,8 @@ public class Einleser implements Runnable {
                 }
                 DateiReader reader = new DateiReader(eingabedateiname);
 
-                System.out.println("Einleser liest " + eingabedateiname);
-                String inhalt = null;
+                // System.out.println("Einleser liest " + eingabedateiname);
+                String inhalt;
                 try {
                     inhalt = reader.lies();
                 } catch (IOException e) { // wandle IOException in AlgorithmusException um
@@ -44,7 +52,7 @@ public class Einleser implements Runnable {
                     try {
                         wait(50);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
+                        throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
                     }
                 }
 

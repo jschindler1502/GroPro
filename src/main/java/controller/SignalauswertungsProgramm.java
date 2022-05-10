@@ -13,27 +13,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// unvorhergesehener Fehler TODO Fehlermeldung
+
+
 /**
- * Programm zur Ausfuehrung der Signalauswertung
+ * Programm zur Ausfuehrung der Signalauswertung, dass drei Nebenlaeufigkeiten ({@link controller.Runnables}) erstellt:
+ * 1. Thread fuer das Einlesen der Eingabedateien, bis alle verarbeitet wurden
+ * 2. Thread fuer das Verarbetiten, also Konvertieren und Auswerten der Eingabedateien, bis alle verarbeitet wurden
+ * 3. Thread fuer das Ausgeben, also Konvertieren und Ausgeben der Datensaetze, bis alle verarbeitet wurden
  */
 public class SignalauswertungsProgramm {
-    private final List<String> offeneDateien; // offen heisst, sie wurden noch nicht ausgelesen und dann konvertiert
-    private final List<Datensatz> verarbeiteteDatensaetze;
-    private final List<String> geschlosseneDateien; // geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
+
+    private final List<String> offeneDateien = Collections.synchronizedList(new ArrayList<>()); // offen heisst, sie wurden noch nicht ausgelesen und dann verarbeitet
+    private final List<Datensatz> verarbeiteteDatensaetze = Collections.synchronizedList(new ArrayList<>()); // verarbeitet heisst, sie wurden konvertiert und ausgewertet
+    private final List<String> geschlosseneDateien = Collections.synchronizedList(new ArrayList<>());// geschlossen heisst, sie wurden eingelesen, konvertiert, verarbeitet und ausgelesen
 
     private final SharedString aktuellGeleseneDatei = new SharedString();
     private final SharedString aktuellGelesenerInhalt = new SharedString();
 
 
     /**
+     * Konstruktor der Klasse, der die zu lesenden Dateien in offeneDateien speichert
+     *
      * @param eingabeordner Name des Ordners inklusive Pfad, in dem sich die Eingabedateien befinden
      */
     public SignalauswertungsProgramm(String eingabeordner) throws IOException {
-
-        offeneDateien = Collections.synchronizedList(new ArrayList<>());
-        verarbeiteteDatensaetze = Collections.synchronizedList(new ArrayList<>());
-        geschlosseneDateien = Collections.synchronizedList(new ArrayList<>());
-
         File folder = new File(eingabeordner);
         File[] listOfFiles = folder.listFiles();
         if (listOfFiles == null || listOfFiles.length == 0) {
@@ -48,9 +52,12 @@ public class SignalauswertungsProgramm {
     }
 
     /**
-     * Methode zum Starten des Programms mit allen Nebenlaeufigkeiten
+     * Methode zum Starten des Programms mit allen 3 Nebenlaeufigkeiten
+     * Diese fuehren die Bearbeitungsschritte parallel durch, bis alle Datensaetze verarbeitet wurden
      */
     public void starteProgramm() {
+        long startTime = System.nanoTime();
+
         int anzDateien = offeneDateien.size();
 
         Thread.UncaughtExceptionHandler handler = (t, e) -> handleException(e);
@@ -79,13 +86,24 @@ public class SignalauswertungsProgramm {
         } catch (InterruptedException e) {
             handleException(e);
         }
+
+
+        long endTime = System.nanoTime();
+
+        System.out.println("Das Programm hat " + (endTime - startTime) / 1000000 + " Millisekunden zum Verarbeiten der " + anzDateien + " Dateien gebraucht.");
     }
 
+    /**
+     * Methode zum Exceptionhandling:
+     * Schreibt Fehlermeldung in Ausgabedatei und Konsole oder nur die Konsole
+     *
+     * @param e die gefangene Exception: {@link IOException}, {@link controller.Exceptions.AlgorithmusException} oder {@link controller.Exceptions.ValidierungsException}
+     */
     private void handleException(Throwable e) {
         try {
             IWriter dateiWriter = new DateiWriter(aktuellGeleseneDatei.getS());
             IWriter konsolenWriter = new KonsoleWriter();
-            dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird EingabeAusgabeException geworfen, in Main gefangen
+            dateiWriter.schreibeAusgabe(e.getMessage()); // falls hier Fehler, wird IOException geworfen, in Main gefangen
             konsolenWriter.schreibeAusgabe(e.getMessage());
         } catch (IOException ex) {
             System.err.println(e.getMessage());

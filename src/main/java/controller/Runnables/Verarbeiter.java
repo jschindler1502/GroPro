@@ -1,12 +1,17 @@
 package controller.Runnables;
 
 import controller.Auswertung;
+import controller.Exceptions.AlgorithmusException;
 import controller.IOConverter;
 import model.SharedString;
 import model.Datensatz;
 
 import java.util.List;
 
+/**
+ * Klasse zum Verarbeiten des Inhalts einer Eingabedatei in einem Thread
+ * konvertiert den Inhalt in ein Objekt der Klasse {@link Datensatz} und wertet es aus
+ */
 public class Verarbeiter implements Runnable {
     private final SharedString aktuellGeleseneDatei;
     private final SharedString aktuellGelesenerInhalt;
@@ -20,15 +25,21 @@ public class Verarbeiter implements Runnable {
         this.verarbeiteteDatensaetze = verarbeiteteDatensaetze;
     }
 
-
-    public void run() {
+    /**
+     * Methode, die das Verarbeiten vornimmt:
+     * Solange noch zu lesende Dateien im Ordner existieren oder der Einleser einen Inhalt zur Verfuegung stellt,
+     * konvertiere diesen und werte ihn aus
+     * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
+     */
+    @Override
+    public void run() throws RuntimeException {
 
         try {
             synchronized (this) {
                 wait(50); // damit Einleser wenigstens die erste Datei gelesen hat
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
+            throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
         }
 
         String tempDateiname, tempDateiInhalt;
@@ -47,23 +58,23 @@ public class Verarbeiter implements Runnable {
                     try {
                         wait(10);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
+                        throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
                     }
                 }
                 continue;
             }
 
             if (offeneDateien.contains(tempDateiname)) { // pruefe, dass ich die aktuellGeleseneDatei noch nicht verarbeitet
-                System.out.println("Verarbeiter startet Verarbeitung von " + tempDateiname);
+                // System.out.println("Verarbeiter startet Verarbeitung von " + tempDateiname);
                 offeneDateien.remove(tempDateiname);
 
                 Datensatz datensatz = IOConverter.convertInputToDatensatz(tempDateiInhalt, tempDateiname);
 
-                Auswertung alg = new Auswertung(datensatz);
-                datensatz = alg.werteAus(); // TODO nicht return
+                Auswertung auswertung = new Auswertung(datensatz);
+                datensatz = auswertung.werteAus(); // TODO nicht return
 
                 verarbeiteteDatensaetze.add(datensatz);
-                System.out.println("Verarbeiter beendet Verarbeitung von " + tempDateiname);
+                // System.out.println("Verarbeiter beendet Verarbeitung von " + tempDateiname);
             }
         }
 

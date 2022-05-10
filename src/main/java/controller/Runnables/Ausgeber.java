@@ -1,5 +1,6 @@
 package controller.Runnables;
 
+import controller.Exceptions.AlgorithmusException;
 import controller.IOConverter;
 import io.DateiWriter;
 import io.IWriter;
@@ -9,7 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Klasse zum nacheinander Auslesen beliebig vieler verarbeiteter Datensaetze in einem Thread
+ */
 public class Ausgeber implements Runnable {
     private final List<Datensatz> verarbeiteteDatensaetze;
     final private List<String> geschlosseneDateien;
@@ -21,14 +24,18 @@ public class Ausgeber implements Runnable {
         this.anzDateien = anzDateien;
     }
 
-
+    /**
+     * Methode, die das Ausgeben vornimmt:
+     * Solange noch nicht alle Dateien ausgegeben wurden, hole die verarbeiteten Datensaetze, konvertiere sie und gib sie aus
+     * @throws RuntimeException, wenn der Thread unerwarteter Weise unterbrochen wurde
+     */
     @Override
     public void run() {
         while (geschlosseneDateien.size() != anzDateien) {
             List<Datensatz> verarbeiteteTemp = new ArrayList<>(verarbeiteteDatensaetze);
             for (Datensatz datensatz :
                     verarbeiteteTemp) {
-                System.out.println("Ausgeber startet Verarbeitung von " + datensatz.getName());
+                // System.out.println("Ausgeber startet Verarbeitung von " + datensatz.getName());
                 verarbeiteteDatensaetze.remove(datensatz);
 
                 String ausgabetext = IOConverter.convertDatensatzToOutput(datensatz);
@@ -37,11 +44,11 @@ public class Ausgeber implements Runnable {
                 try {
                     dateiWriter.schreibeAusgabe(ausgabetext);
                 } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage()); // unvorhergesehener Fehler TODO Fehlermeldung
+                    throw new AlgorithmusException("Unerwarteter Fehler im Algorithmus");
                 }
 
                 geschlosseneDateien.add(datensatz.getName());
-                System.out.println("Ausgeber beendet Verarbeitung von " + datensatz.getName());
+                // System.out.println("Ausgeber beendet Verarbeitung von " + datensatz.getName());
             }
         }
     }

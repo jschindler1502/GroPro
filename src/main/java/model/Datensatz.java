@@ -1,11 +1,13 @@
 package model;
 
+import controller.Exceptions.AlgorithmusException;
+
 public class Datensatz {
     final private String name;
-    private Messwert[] messwertList;
+    private final Messwert[] messwertList;
     final private int N;
 
-    private Messwert max;
+    private final int maxIndex;
     private int indL;
     private int indR;
     private double FWHM;
@@ -15,7 +17,7 @@ public class Datensatz {
         this.name = name;
         this.messwertList = messwerte;
         this.N = messwertList.length;
-        this.max = findMax();
+        this.maxIndex = findMaxInd();
     }
 
     public Messwert[] getMesswertList() {
@@ -26,25 +28,26 @@ public class Datensatz {
         return FWHM;
     }
 
-    public int getIndexOf(Messwert mw) { // TODO performanz
+    public int getIndexOf(Messwert mw) { // TODO performanz und fehler
         for (int k = 0; k < N; k++) {
             if (mw.equals(messwertList[k])) {
                 return k;
             }
         }
-        System.out.println("nicht gefunden");
         return -1;
     }
 
-    private Messwert findMax() {
+    private int findMaxInd() {
         Messwert max = messwertList[0];
-        for (Messwert mw :
-                messwertList) {
+        int maxInd = 0;
+        for (int k = 0; k < N; k++) {
+            Messwert mw = messwertList[k];
             if (mw.getY() > max.getY()) {
                 max = mw;
+                maxInd = k;
             }
         }
-        return max;
+        return maxInd;
     }
 
 
@@ -68,8 +71,8 @@ public class Datensatz {
         return N;
     }
 
-    public Messwert getMax() {
-        return max;
+    public int getMaxIndex() {
+        return maxIndex;
     }
 
     public int getIndL() {
