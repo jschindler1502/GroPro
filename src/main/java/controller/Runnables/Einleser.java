@@ -12,12 +12,12 @@ import java.util.List;
  * Klasse zum nacheinander Einlesen beliebig vieler Eingabedateien im angegebenen Ordner in einem Thread
  */
 public class Einleser implements Runnable {
-    private final List<String> offeneDateien;
+    private final List<String> unverarbeiteteDateien;
     private final SharedString aktuellGeleseneDatei;
     private final SharedString aktuellGelesenerInhalt;
 
-    public Einleser(List<String> offeneDateien, SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt) {
-        this.offeneDateien = offeneDateien;
+    public Einleser(List<String> unverarbeiteteDateien, SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt) {
+        this.unverarbeiteteDateien = unverarbeiteteDateien;
         this.aktuellGeleseneDatei = aktuellGeleseneDatei;
         this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
     }
@@ -30,7 +30,7 @@ public class Einleser implements Runnable {
      */
     @Override
     public void run() throws RuntimeException {
-        List<String> offenTemp = new ArrayList<>(offeneDateien);
+        List<String> offenTemp = new ArrayList<>(unverarbeiteteDateien);
 
         while (offenTemp.size() != 0) {
             for (String eingabedateiname : offenTemp) {
@@ -57,7 +57,7 @@ public class Einleser implements Runnable {
                 }
 
             }
-            offenTemp = new ArrayList<>(offeneDateien);
+            offenTemp = new ArrayList<>(unverarbeiteteDateien);
         }
         synchronized (aktuellGeleseneDatei) {
             aktuellGeleseneDatei.setS(null);

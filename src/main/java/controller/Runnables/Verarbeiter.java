@@ -15,13 +15,13 @@ import java.util.List;
 public class Verarbeiter implements Runnable {
     private final SharedString aktuellGeleseneDatei;
     private final SharedString aktuellGelesenerInhalt;
-    private final List<String> offeneDateien;
+    private final List<String> unverarbeiteteDateien;
     private final List<Datensatz> verarbeiteteDatensaetze;
 
-    public Verarbeiter(SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt, List<String> offeneDateien, List<Datensatz> verarbeiteteDatensaetze) {
+    public Verarbeiter(SharedString aktuellGeleseneDatei, SharedString aktuellGelesenerInhalt, List<String> unverarbeiteteDateien, List<Datensatz> verarbeiteteDatensaetze) {
         this.aktuellGeleseneDatei = aktuellGeleseneDatei;
         this.aktuellGelesenerInhalt = aktuellGelesenerInhalt;
-        this.offeneDateien = offeneDateien;
+        this.unverarbeiteteDateien = unverarbeiteteDateien;
         this.verarbeiteteDatensaetze = verarbeiteteDatensaetze;
     }
 
@@ -45,7 +45,7 @@ public class Verarbeiter implements Runnable {
 
         String tempDateiname, tempDateiInhalt;
 
-        while (offeneDateien.size() != 0) { // wenn 0, ist Einleser fertig
+        while (unverarbeiteteDateien.size() != 0) { // wenn 0, ist Einleser fertig
 
             synchronized (aktuellGeleseneDatei) {
                 tempDateiname = aktuellGeleseneDatei.getS();
@@ -54,7 +54,7 @@ public class Verarbeiter implements Runnable {
                 tempDateiInhalt = aktuellGelesenerInhalt.getS();
             }
 
-            if (tempDateiname == null || tempDateiInhalt == null || !(offeneDateien.contains(tempDateiname))) {// pruefe, dass aktuellGeleseneDatei noch nicht verarbeitet
+            if (tempDateiname == null || tempDateiInhalt == null || !(unverarbeiteteDateien.contains(tempDateiname))) {// pruefe, dass aktuellGeleseneDatei noch nicht verarbeitet
                 synchronized (this) {
                     try {
                         wait(10);
@@ -65,7 +65,7 @@ public class Verarbeiter implements Runnable {
                 continue;
             }
 
-            offeneDateien.remove(tempDateiname);
+            unverarbeiteteDateien.remove(tempDateiname);
 
             Datensatz datensatz = IOConverter.convertInputToDatensatz(tempDateiInhalt, tempDateiname);
 
