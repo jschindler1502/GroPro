@@ -54,7 +54,7 @@ public class Verarbeiter implements Runnable {
                 tempDateiInhalt = aktuellGelesenerInhalt.getS();
             }
 
-            if (tempDateiname == null || tempDateiInhalt == null) {
+            if (tempDateiname == null || tempDateiInhalt == null || !(offeneDateien.contains(tempDateiname))) {// pruefe, dass aktuellGeleseneDatei noch nicht verarbeitet
                 synchronized (this) {
                     try {
                         wait(10);
@@ -65,19 +65,14 @@ public class Verarbeiter implements Runnable {
                 continue;
             }
 
-            if (offeneDateien.contains(tempDateiname)) { // pruefe, dass aktuellGeleseneDatei noch nicht verarbeitet
-                offeneDateien.remove(tempDateiname);
+            offeneDateien.remove(tempDateiname);
 
-                Datensatz datensatz = IOConverter.convertInputToDatensatz(tempDateiInhalt, tempDateiname);
+            Datensatz datensatz = IOConverter.convertInputToDatensatz(tempDateiInhalt, tempDateiname);
 
-                Auswertung auswertung = new Auswertung(datensatz);
-                auswertung.werteAus();
+            Auswertung auswertung = new Auswertung(datensatz);
+            auswertung.werteAus();
 
-                verarbeiteteDatensaetze.add(auswertung.getDatensatz());
-            }
+            verarbeiteteDatensaetze.add(auswertung.getDatensatz());
         }
-
     }
-
-
 }

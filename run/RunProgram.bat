@@ -8,7 +8,7 @@ IF NOT EXIST %jarDat% GOTO NOJAR
 IF NOT EXIST %in% GOTO NOINPUT
 
 DEL /q %out%
-ECHO Die Dateien im Ordner %%in werden verarbeitet.
+ECHO Die Dateien im Ordner %in% werden verarbeitet.
 java -jar %jarDat% %in%
 ECHO ------------------------------------------------------
 GOTO ENDE
