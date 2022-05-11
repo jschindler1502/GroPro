@@ -57,6 +57,9 @@ public class IOConverter {
         if (messwerte.size() == 0) {
             throw new ValidierungsException("Syntaxfehler in der Datei "+eingabedateiname+": es wurden keine Messwerte eingegeben.");
         }
+        if (messwerte.size() < 100) {
+            throw new ValidierungsException("Semantikfehler in der Datei "+eingabedateiname+": es wurden zu wenige Messwerte eingegeben. Eine Datei sollte mindestens 100 Messwerte beinhalten");
+        }
 
         Messwert[] mwArr = new Messwert[messwerte.size()];
         mwArr = messwerte.toArray(mwArr);
