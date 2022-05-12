@@ -3,7 +3,7 @@ import controller.SignalauswertungsProgramm;
 import java.io.IOException;
 
 /**
- * Klasse nimmt als 1. Parameter den Ordner der Eingabedateien entgegen und startet das Signalauswertungsprogramm
+ * main nimmt als 1. Parameter den Ordner der Eingabedateien entgegen und startet das Signalauswertungsprogramm
  */
 public class Main {
 
