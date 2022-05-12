@@ -1,6 +1,7 @@
 package controller.Runnables;
 
 import controller.Exceptions.AlgorithmusException;
+import io.IReader;
 import model.SharedString;
 import io.DateiReader;
 
@@ -37,7 +38,7 @@ public class Einleser implements Runnable {
                 synchronized (aktuellGeleseneDatei) {
                     aktuellGeleseneDatei.setS(eingabedateiname);
                 }
-                DateiReader reader = new DateiReader(eingabedateiname);
+                IReader reader = new DateiReader(eingabedateiname);
 
                 String inhalt;
                 try {
@@ -61,6 +62,9 @@ public class Einleser implements Runnable {
         }
         synchronized (aktuellGeleseneDatei) {
             aktuellGeleseneDatei.setS(null);
+        }
+        synchronized (aktuellGelesenerInhalt) {
+            aktuellGelesenerInhalt.setS(null);
         }
     }
 }
