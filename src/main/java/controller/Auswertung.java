@@ -10,7 +10,7 @@ import model.Messwert;
  * 3. Berechnung der oberen Einhuellenden<br>
  * 4. Berechnung der Pulsbreite (FWHM)
  */
-public class Auswertung {
+public class Auswertung implements IAuswertung {
     private final Datensatz datensatz;
 
     public Auswertung(Datensatz datensatz) {
